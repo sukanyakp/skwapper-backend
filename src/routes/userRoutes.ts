@@ -1,12 +1,12 @@
 import express from "express";
-import { userController } from "../controllers/userController";
+import { UserController } from "../controllers/implements/userController";
 import { UserService } from "../services/Implements/userService";
-import { UserRepositories } from "../repositories/Implements/UserRepositories";
+import { UserRepository } from "../repositories/Implements/userRepository";
 
 
-const UserRepository = new UserRepositories();
-const userServices = new UserService(UserRepository);
-const userControllers = new userController(userServices);
+const userRepositoryInstance = new UserRepository();
+const userServices = new UserService(userRepositoryInstance);
+const userControllers = new UserController(userServices);
 
 
 const userRoutes = express.Router()
