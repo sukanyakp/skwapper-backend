@@ -1,17 +1,23 @@
-import express from "express";
-import { userController } from "../controllers/userController";
+import express, { NextFunction, Request, Response } from "express";
+import { UserController } from "../controllers/implements/userController";
 import { UserService } from "../services/Implements/userService";
-import { UserRepositories } from "../repositories/Implements/UserRepositories";
+import { UserRepository } from "../repositories/Implements/userRepository";
+import User from "../models/user/User";
 
 
-const UserRepository = new UserRepositories();
-const userServices = new UserService(UserRepository);
-const userControllers = new userController(userServices);
+const userRepositoryInstance = new UserRepository( );
+const userServices = new UserService(userRepositoryInstance);
+const userControllers = new UserController(userServices);
 
 
 const userRoutes = express.Router()
 
-userRoutes.post('/signup', userControllers.register);
+
+userRoutes.post('/signup',(req:Request, res:Response,next:NextFunction)=>(
+    userControllers.register(req,res)
+))
+userRoutes.post('/verify-otp' , userControllers.verifyOTp);
+// userRoutes.post('/login',userControllers.login)
 
 export default userRoutes
 
