@@ -17,6 +17,7 @@ userRoutes.post('/signup',(req:Request, res:Response,next:NextFunction)=>(
     userControllers.register(req,res)
 ))
 userRoutes.post('/verify-otp' , userControllers.verifyOTp);
+// userRoutes.post('/login',userControllers.login)
 
 export default userRoutes
 

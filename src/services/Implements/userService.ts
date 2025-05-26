@@ -5,6 +5,8 @@ import { IuserService } from "../Interfaces/IuserService";
 import redisClient from "../../config/redis";
 import { generateOTP } from "../../utils/otp.util";
 import { sendOtpEmail } from "../../utils/email.util";
+import { comparePassword } from "../../utils/bcrypt.util";
+import { generateToken } from "../../utils/jwt.util";
 
 
 export class UserService implements IuserService {
@@ -42,7 +44,6 @@ export class UserService implements IuserService {
 
 
 async verifyOtp(email: string, otp: string): Promise<Iuser> {
-   console.log(email , 'is there any email');
    
   const key = `user-register:${email}`
   console.log(key , 'is same key is creating ');
@@ -66,6 +67,24 @@ async verifyOtp(email: string, otp: string): Promise<Iuser> {
 
     return savedUser
 
+ }
+
+ async login (email :string, password : string) : Promise <{token : string; user : Iuser}> {
+
+   const user = await this.UserRepository.findByEmail(email)
+
+  if(!user){
+    throw new Error('user not found')
+  }
+
+  const isPasswordValid = await comparePassword(password,user.password)
+   if (!isPasswordValid) {
+    throw new Error("Invalid password");
+  }
+
+  const token = generateToken({ id: user._id, email: user.email });
+
+  return { token, user };
  }
 
 }

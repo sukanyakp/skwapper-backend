@@ -1,9 +1,6 @@
-import User,{Iuser} from "../../models/user/User";
+import User, { Iuser } from "../../models/user/User";
 import { IuserRepository } from "../Interfaces/IuserRepository";
 import { BaseRepository } from "./baseRepository";
-
-import { IBaseRepository } from "../Interfaces/IbaseRepository";
-
 
 export class UserRepository extends BaseRepository<Iuser> implements IuserRepository {
   constructor() {
@@ -11,6 +8,10 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
   }
 
   async createUser(userData: Iuser): Promise<Iuser> {
-    return this.create(userData); // delegate to BaseRepository
+    return this.create(userData);
+  }
+
+  async findByEmail(email: string): Promise<Iuser | null> {
+    return User.findOne({ email });
   }
 }
