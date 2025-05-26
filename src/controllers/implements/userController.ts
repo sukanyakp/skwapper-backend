@@ -11,8 +11,10 @@ export class UserController {
     this.service = service;
   }
 
+ 
   public register = async (req: Request, res: Response): Promise<void> => {
     try {
+      
       console.log(req.body, "formData");
 
       const user = req.body as Iuser;
@@ -23,7 +25,9 @@ export class UserController {
     }
 
     const otp = await this.service.register(user)
-    res.status(200).json({message : "OTP send " ,otp})
+    console.log(otp ,'otp created');
+    
+    res.status(200).json({message : "OTP send" ,otp})
     } catch (error) {
       console.error("Registration error:", error);
       res.status(500).json({ message: "Registration failed", error });
@@ -31,10 +35,14 @@ export class UserController {
   };
 
 
-  public verifyOTp =async (req: Request,res:Response) =>{
+  public verifyOTp = async (req: Request,res:Response) =>{
 
+    console.log('otp verification');
+    
     try {
       const {email,otp} = req.body
+      console.log(email,otp, 'email and otp');
+      
       const user = this.service.verifyOtp(email,otp)
       res.status(201).json({ message: "User verified & saved", user });
     } catch (error) {
