@@ -4,7 +4,8 @@ export interface Iuser extends Document  {
     name : string
     email : string
     password : string
-    role : string
+    role : "student" | "tutor" | "admin"
+    profilePic : string
     isBlocked : boolean
     isApproved:boolean  // tutor
     status:string
@@ -31,8 +32,12 @@ const userSchema = new mongoose.Schema({
     },
     role:{
             type:String,
-            enum:['student','admin'],
+            enum:['student',"tutor",'admin'],
+            required : true,
             default:'student'
+    },
+    profilePic : {
+        type : String
     },
     isBlocked:{
             type:Boolean,
@@ -49,11 +54,9 @@ const userSchema = new mongoose.Schema({
     },
     title:{
             type:String,
-            required:true
     },
     bio:{
-            type:String,
-            required:true
+            type:String,  
     },
 },
 { 

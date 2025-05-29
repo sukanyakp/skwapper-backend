@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IuserService } from "../../services/Interfaces/IuserService";
-import { Iuser } from "../../models/user/User";
+import { Iuser } from "../../models/user/userModel";
 import { hashPassword } from "../../utils/bcrypt.util";
 
 export class UserController {
@@ -35,8 +35,12 @@ export class UserController {
   public verifyOTp = async (req: Request,res:Response) =>{
     
     try {
+      console.log('ffef');
+      
       const {email,otp} = req.body 
-      const user = this.service.verifyOtp(email,otp)
+      const user = await this.service.verifyOtp(email,otp)
+      console.log(user , 'verified user');
+      
       res.status(201).json({ message: "User verified & saved", user });
     } catch (error) {
       res.status(400).json({message : "OTP verification failed",error})
@@ -44,30 +48,6 @@ export class UserController {
 
   }
 
-  public login = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, password } = req.body;
 
-    if (!email || !password) {
-      res.status(400).json({ message: "Email and password are required" });
-      return;
-    }
-
-    const { token, user } = await this.service.login(email, password);
-
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      user: {
-        _id: user._id,
-        email: user.email,
-        name: user.name,
-      },
-    });
-  } catch (error: any) {
-    console.error("Login error:", error);
-    res.status(401).json({ message: error.message || "Login failed" });
-  }
-};
 
 }
