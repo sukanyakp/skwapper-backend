@@ -48,33 +48,6 @@ export class UserController {
 
   }
 
-  public login = async (req: Request, res: Response): Promise<void> => {
-  try {
-    console.log('here we are at the backend login');
-    
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-      res.status(400).json({ message : "Email and password are required" });
-      return;
-    }
 
-    const { token, user } = await this.service.login(email, password);
-
-    res.status(200).json({
-      message: "Login successful",
-    
-      user: {
-        token,
-        _id: user._id,
-        email: user.email,
-        name: user.name,
-      },
-    });
-  } catch (error: any) {
-    console.error("Login error:", error);
-    res.status(401).json({ message: error.message || "Login failed" });
-  }
-};
 
 }
