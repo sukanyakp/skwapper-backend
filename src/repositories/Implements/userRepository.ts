@@ -1,4 +1,4 @@
-import User, { Iuser } from "../../models/user/User";
+import User, { Iuser } from "../../models/user/userModel";
 import { IuserRepository } from "../Interfaces/IuserRepository";
 import { BaseRepository } from "./baseRepository";
 
@@ -8,7 +8,8 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
   }
 
   async createUser(userData: Iuser): Promise<Iuser> {
-    return this.create(userData);
+    const value =  await this.create(userData);
+    return value;
   }
 
   async findByEmail(email: string): Promise<Iuser | null> {

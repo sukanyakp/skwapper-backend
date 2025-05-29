@@ -3,8 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes'
 import session from 'express-session'
+import db from '../src/config/db'
 
 dotenv.config()
+db()  // we need to set for the mongoDB connection 
 
 const app = express();
 const PORT = 3000;
@@ -23,7 +25,7 @@ app.use(session({
 }))
 
 app.use(express.json());
-app.use('/user', userRoutes)
+app.use('/', userRoutes)
 
 
 app.listen(PORT, () => {
