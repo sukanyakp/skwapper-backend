@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 
+// Interface for User
 export interface Iuser extends Document  {
     name : string
     email : string
@@ -15,6 +16,7 @@ export interface Iuser extends Document  {
     updatedAt : Date
 }
 
+// Schema
 const userSchema = new mongoose.Schema({
     
     name : {
@@ -43,7 +45,7 @@ const userSchema = new mongoose.Schema({
             type:Boolean,
             default:false
     },
-    isApproved:{                  // tutor
+    isApproved:{                 
             type:Boolean,
             default:false
     },
@@ -64,4 +66,6 @@ const userSchema = new mongoose.Schema({
 }
 )
 
+
+// Export Model
 export default mongoose.model<Iuser>('User' , userSchema)
