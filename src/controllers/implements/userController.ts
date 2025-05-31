@@ -35,7 +35,6 @@ export class UserController {
   public verifyOTp = async (req: Request,res:Response) =>{
     
     try {
-      console.log('ffef');
       
       const {email,otp} = req.body 
       const user = await this.service.verifyOtp(email,otp)

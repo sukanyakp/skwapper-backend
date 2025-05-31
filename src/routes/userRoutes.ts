@@ -14,7 +14,6 @@ const userControllers = new UserController(userServices);
 const authServices = new AuthService(userRepositoryInstance)
 const authControllers = new AuthController(authServices)
 
-
 const userRoutes = express.Router()
 
 
@@ -23,6 +22,10 @@ userRoutes.post('/signup',(req:Request, res:Response,next:NextFunction)=>(
 ))
 userRoutes.post('/verify-otp' , userControllers.verifyOTp);
 userRoutes.post('/login',authControllers.login)
+userRoutes.post('/forgot-password' , authControllers.forgotPassword)
+
+userRoutes.post("/reset-password/:token", authControllers.resetPassword);
+
 
 export default userRoutes
 

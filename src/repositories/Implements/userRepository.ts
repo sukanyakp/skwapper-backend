@@ -8,11 +8,18 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
   }
 
   async createUser(userData: Iuser): Promise<Iuser> {
-    const value =  await this.create(userData);
-    return value;
+    return  await this.create(userData);
   }
 
   async findByEmail(email: string): Promise<Iuser | null> {
     return User.findOne({ email });
   }
+
+  async storeResetToken(userId: string, token: string, expiry: Date): Promise<void> {
+    await User.findByIdAndUpdate(userId, {
+      resetToken: token,
+      resetTokenExpiry: expiry,
+    });
+  }
+
 }

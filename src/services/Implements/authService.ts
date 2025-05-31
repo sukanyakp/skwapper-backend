@@ -1,7 +1,12 @@
 import { Iuser } from "../../models/user/userModel";
 import { IuserRepository } from "../../repositories/Interfaces/IuserRepository";
-import { comparePassword } from "../../utils/bcrypt.util"; 
-import { generateAccessToken, generateRefreshToken }  from "../../utils/jwt.util"
+import {hashPassword, comparePassword } from "../../utils/bcrypt.util"; 
+import { generateAccessToken, generateRefreshToken ,generateResetToken }  from "../../utils/jwt.util"
+import jwt from "jsonwebtoken";
+import crypto from 'crypto'
+import { Transporter } from "nodemailer";
+import { sendResetEmail  } from "../../utils/email.util";
+
 
 export class AuthService {
   private userRepository: IuserRepository;
@@ -33,6 +38,10 @@ export class AuthService {
     const accessToken = generateAccessToken({ id: user._id, email: user.email });
     const refreshToken = generateRefreshToken({ id: user._id });
 
+    // console.log( accessToken,'accessTokend ');
+    // console.log( refreshToken,'accessTokend ');
+    
+
     // 4. Optional: Store refreshToken in DB or cache (if revocation logic is needed)
 
     return {
@@ -41,4 +50,47 @@ export class AuthService {
       user,
     };
   }
+
+async forgotPassword(email: string): Promise<void> {
+  const user = await this.userRepository.findByEmail(email);
+  if (!user) throw new Error('User not found');
+
+  // ✅ Generate JWT token
+  const token = generateResetToken({ id: user._id, email: user.email });
+
+  // ✅ Store token hash and expiry in DB for validation (optional, but good for blacklisting or expiry verification)
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+  user.resetToken = hashedToken;
+  user.tokenExpiry = Date.now() + 1000 * 60 * 15; // 15 minutes
+  await user.save();
+
+  // ✅ Send token in email
+  const resetLink = `http://localhost:5173/reset-password/${token}`;
+  await sendResetEmail(user.email, token);
+}
+
+
+async resetPassword(token: string, newPassword: string): Promise<void> {
+  try {
+
+    console.log('yeah this is resetPassword : : : ');
+    
+    const decoded : any = jwt.verify(token,process.env.RESET_PASSWORD_SECRET as string);
+    
+    console.log('here at the backend resetPassword');
+    console.log(decoded , 'decodec');
+    
+    const user = await this.userRepository.findByEmail(decoded.email);
+    if (!user) throw new Error("User not found");
+
+    const hashed = await hashPassword(newPassword)
+
+    user.password = hashed;
+    await user.save();
+  } catch (err) {
+    throw new Error("Invalid or expired token");
+  }
+}
+
+
 }

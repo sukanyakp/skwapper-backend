@@ -14,6 +14,9 @@ export interface Iuser extends Document  {
     bio:string
     createdAt : Date
     updatedAt : Date
+    resetToken : string
+    tokenExpiry : number
+
 }
 
 // Schema
@@ -60,6 +63,12 @@ const userSchema = new mongoose.Schema({
     bio:{
             type:String,  
     },
+    resetToken : {
+            type : String
+    },
+    tokenExpiry : {
+            type : Number
+    }
 },
 { 
     timestamps : true
