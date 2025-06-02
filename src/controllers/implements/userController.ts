@@ -47,6 +47,18 @@ export class UserController {
 
   }
 
+  public resendOtp = async(req : Request , res : Response)=>{
+    try {
+      
+      console.log('here we are at the resend otp');
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+
+  }
+
 
 
 }

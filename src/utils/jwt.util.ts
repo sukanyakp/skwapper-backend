@@ -20,3 +20,17 @@ export const generateResetToken = (payload: object): string => {
     expiresIn: "15m", // or longer
   });
 };
+
+
+export const verifyAccessToken = (token : string) =>{
+  console.log(token , 'at verifyAccessToken');
+
+  try {
+    
+    return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string)
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+  
+}

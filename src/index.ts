@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes'
+import adminRoutes from './routes/adminRoutes'
 import session from 'express-session'
 import db from '../src/config/db'
 
@@ -26,6 +27,7 @@ app.use(session({
 
 app.use(express.json());
 app.use('/', userRoutes)
+app.use('/admin',adminRoutes)
 
 
 app.listen(PORT, () => {

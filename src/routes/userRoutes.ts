@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from "express";
 import { UserController } from "../controllers/implements/userController";
 import { UserService } from "../services/Implements/userService";
 import { UserRepository } from "../repositories/Implements/userRepository";
-import User from "../models/user/userModel";
 import { AuthController } from "../controllers/implements/authController";
 import { AuthService } from "../services/Implements/authService";
 
@@ -25,6 +24,7 @@ userRoutes.post('/login',authControllers.login)
 userRoutes.post('/forgot-password' , authControllers.forgotPassword)
 
 userRoutes.post("/reset-password/:token", authControllers.resetPassword);
+// userRoutes.post('/resend-otp',userControllers.resendOtp)
 
 
 export default userRoutes
