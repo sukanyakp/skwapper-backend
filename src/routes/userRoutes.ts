@@ -24,7 +24,7 @@ userRoutes.post('/login',authControllers.login)
 userRoutes.post('/forgot-password' , authControllers.forgotPassword)
 
 userRoutes.post("/reset-password/:token", authControllers.resetPassword);
-// userRoutes.post('/resend-otp',userControllers.resendOtp)
+userRoutes.post('/resend-otp',userControllers.resendOtp)
 
 
 export default userRoutes

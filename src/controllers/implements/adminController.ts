@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IAdminService } from "../../services/Interfaces/IadminService";
-
+import { generateAccessToken } from "../../utils/jwt.util";
 
 
 export class AdminController {
@@ -55,8 +55,8 @@ export class AdminController {
       return;
     }
 
-    // If you use JWT, generate a token here
-    // const token = generateToken(admin._id);
+    //  generate a token
+    const token = generateAccessToken({payload :admin._id});
 
     res.status(200).json({ 
       message: "Login successful", 

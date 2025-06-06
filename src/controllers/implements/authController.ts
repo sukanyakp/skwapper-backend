@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { IauthService } from "../../services/Interfaces/IauthService";
-import transporter from 'nodemailer'
 
 
 export class AuthController {
@@ -30,7 +29,6 @@ export class AuthController {
         secure : process.env.NODE_ENV === 'production',
         sameSite : "strict" ,
         maxAge : 7 * 24 * 60 * 60 * 1000
-        // path : "/api/"
       })
 
       res.status(200).json({
@@ -73,7 +71,7 @@ export class AuthController {
 public resetPassword = async(req : Request , res : Response) : Promise<void> =>{
   try {
 
-    console.log('here we at the resetPassword ?');
+    console.log('here we are at the resetPassword ?');
     
     const {token} = req.params ;
     const {password} = req.body;
@@ -96,7 +94,6 @@ public resetPassword = async(req : Request , res : Response) : Promise<void> =>{
   }
 
 }
-
 
 
 }

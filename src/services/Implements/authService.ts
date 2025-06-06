@@ -4,7 +4,6 @@ import {hashPassword, comparePassword } from "../../utils/bcrypt.util";
 import { generateAccessToken, generateRefreshToken ,generateResetToken }  from "../../utils/jwt.util"
 import jwt from "jsonwebtoken";
 import crypto from 'crypto'
-import { Transporter } from "nodemailer";
 import { sendResetEmail  } from "../../utils/email.util";
 
 
@@ -27,6 +26,9 @@ export class AuthService {
     if (!user) {
       throw new Error("User not found");
     }
+
+    console.log(user , 'here is the user ');
+    
 
     // 2. Validate password
     const isPasswordValid = await comparePassword(password, user.password);

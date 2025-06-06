@@ -3,11 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
+import tutorRoutes from './routes/tutorRoutes'
 import session from 'express-session'
 import db from '../src/config/db'
 
 dotenv.config()
-db()  // we need to set for the mongoDB connection 
+db() 
 
 const app = express();
 const PORT = 3000;
@@ -28,6 +29,7 @@ app.use(session({
 app.use(express.json());
 app.use('/', userRoutes)
 app.use('/admin',adminRoutes)
+app.use('/tutor',tutorRoutes)
 
 
 app.listen(PORT, () => {

@@ -47,18 +47,26 @@ export class UserController {
 
   }
 
-  public resendOtp = async(req : Request , res : Response)=>{
-    try {
-      
-      console.log('here we are at the resend otp');
-      
-    } catch (error) {
-      console.log(error);
-      
+ public resendOtp = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+    console.log(email, 'email .. . ');
+
+    if (!email) {
+      res.status(400).json({ message: "Email is required" });
+      return;
     }
 
-  }
+    await this.service.resendOtp(email);
 
+    console.log('Resent OTP');
+    res.status(200).json({ message: "OTP resent successfully" });
+
+  } catch (error) {
+    console.error("Resend OTP Error:", error);
+    res.status(500).json({ message: "Failed to resend OTP", error });
+  }
+};
 
 
 }

@@ -5,7 +5,6 @@ import { IuserService } from "../Interfaces/IuserService";
 import redisClient from "../../config/redis";
 import { generateOTP } from "../../utils/otp.util";
 import { sendOtpEmail } from "../../utils/email.util";
-import { comparePassword } from "../../utils/bcrypt.util";
 // import { generateToken } from "../../utils/jwt.util";
 
 
@@ -37,10 +36,10 @@ if (!value) {
 }
 
 const parsedValue: Iuser & { otp: string } = JSON.parse(value);
-console.log("✅ Successfully stored in Redis:", parsedValue);
+console.log(" Successfully stored in Redis:", parsedValue);
 
   
-   await sendOtpEmail(user.email, otp);
+  await sendOtpEmail(user.email, otp);
   return otp
 
   } catch (error) {
@@ -50,31 +49,63 @@ console.log("✅ Successfully stored in Redis:", parsedValue);
 }
 
 
-
 async verifyOtp(email: string, otp: string): Promise<Iuser> {
-   
-  const key = `user-register:${email}`
-  console.log(key , 'is same key is creating ');
-  
-  const data = await redisClient.get(key)
+  const key = `user-register:${email}`;
+  const data = await redisClient.get(key);
 
   if (!data) {
-  throw new Error(`Redis GET returned null for key: ${key}`);
+    throw new Error(`No OTP found for email: ${email}`);
+  }
+
+  const parsedValue: Iuser & { otp?: string } = JSON.parse(data);
+
+  if (parsedValue.otp !== otp) {
+    throw new Error("Incorrect OTP");
+  }
+
+  // Check if user already exists
+  const existingUser = await this.UserRepository.findByEmail(email);
+  if (existingUser) {
+    throw new Error("User already registered with this email");
+  }
+
+  delete parsedValue.otp;
+
+  const userToCreate: Iuser = parsedValue;
+
+  const savedUser = await this.UserRepository.createUser(userToCreate);
+
+  await redisClient.del(key);
+  return savedUser;
 }
+
+
+
+ async resendOtp(email: string): Promise<void> {
+  console.log('Reached at resend otp');
   
-const parsedValue: Iuser & { otp ?: string } = JSON.parse(data);
+  const key = `user-register:${email}`;
 
-    if(parsedValue.otp !== otp) throw new Error("Incorrect OTP");
+  const data = await redisClient.get(key);
+  if (!data) {
+    throw new Error("No pending registration found for this email");
+  }
 
-    delete parsedValue.otp; 
+  const parsedValue : Iuser & { otp ?: string } = JSON.parse(data);
 
-    const userToCreate : Iuser = parsedValue
+  const newOtp = generateOTP();
+  console.log('otp genrated in resendOtp');
+  
+  parsedValue.otp = newOtp;
 
-    const savedUser = await this.UserRepository.createUser(userToCreate)
-    await redisClient.del(key)
-    return savedUser
+  await redisClient.set(key, JSON.stringify(parsedValue), {
+    EX: 300, // 5 mins
+  });
 
- }
+  await sendOtpEmail(email, newOtp);
+  console.log(`New OTP resent to ${email}:`, newOtp);
+}
+
 
  
 }
