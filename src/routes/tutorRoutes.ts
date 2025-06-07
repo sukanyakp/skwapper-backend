@@ -5,6 +5,7 @@ import { TutorRepository } from "../repositories/Implements/tutorRepository";
 import  Tutor  from "../models/tutor/tutorModel";
 import  User from "../models/user/userModel";
 import multer from "multer";
+import { verifyToken } from "../middlewares/authMiddleware";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -18,5 +19,6 @@ const router = express.Router();
 
 // POST /tutor/apply
 router.post("/apply", upload.array("documents"), tutorControllers.apply);
+router.get('/status', verifyToken, tutorControllers.checkStatus)
 
 export default router;

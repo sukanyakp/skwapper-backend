@@ -42,4 +42,9 @@ console.log("Saved to DB. Result:", result);
   }
 }
 
+public async getApplicationStatus(userId: string) {
+  return this.TutorRepository.findByUserId(userId);
+}
+
+
 }
