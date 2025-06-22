@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
 import tutorRoutes from './routes/tutorRoutes'
 import session from 'express-session'
 import db from '../src/config/db'
+import cookieParser from "cookie-parser";
 
 dotenv.config()
 db() 
@@ -19,6 +21,8 @@ app.use(cors({
   credentials: true               
 }));
 
+app.use(cookieParser());
+
 app.use(session({
   secret : process.env.SESSION_SECRET as string,
   resave : false,
@@ -27,7 +31,8 @@ app.use(session({
 }))
 
 app.use(express.json());
-app.use('/', userRoutes)
+app.use('/auth',authRoutes)
+app.use('/user', userRoutes)
 app.use('/admin',adminRoutes)
 app.use('/tutor',tutorRoutes)
 

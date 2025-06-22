@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IuserService } from "../../services/Interfaces/IuserService";
-import { Iuser } from "../../models/user/userModel";
-import { hashPassword } from "../../utils/bcrypt.util";
+import { AuthRequest } from "../../types";
+
 
 export class UserController {
   private service: IuserService;
@@ -10,63 +10,68 @@ export class UserController {
     this.service = service;
   }
 
- 
-  public register = async (req: Request, res: Response): Promise<void> => {
-    try {
-
-      const user = req.body as Iuser;
-      console.log(user,'user');
-      
-    if (user.password) {
-       user.password = await hashPassword(user.password);
-    }
-
-    const otp = await this.service.register(user)
-    console.log(otp ,'otp created');
-    
-    res.status(200).json({message : "OTP send" }) //otp
-    } catch (error) {
-      console.error("Registration error:", error);
-      res.status(500).json({ message: "Registration failed", error });
-    }
-  };
-
-
-  public verifyOTp = async (req: Request,res:Response) =>{
-    
-    try {
-      
-      const {email,otp} = req.body 
-      const user = await this.service.verifyOtp(email,otp)
-      console.log(user , 'verified user');
-      
-      res.status(201).json({ message: "User verified & saved", user });
-    } catch (error) {
-      res.status(400).json({message : "OTP verification failed",error})
-    }
-
-  }
-
- public resendOtp = async (req: Request, res: Response): Promise<void> => {
+public createProfile = async (req: AuthRequest, res: Response) => {
   try {
-    const { email } = req.body;
-    console.log(email, 'email .. . ');
+    console.log('at createProfile controller');
 
-    if (!email) {
-      res.status(400).json({ message: "Email is required" });
-      return;
-    }
+    const userId = req.userId;
+    const file = req.file as Express.Multer.File; // 🔥 Multer + Cloudinary gives this
 
-    await this.service.resendOtp(email);
+    console.log(file ,'files');
+    
 
-    console.log('Resent OTP');
-    res.status(200).json({ message: "OTP resent successfully" });
+    const profileData = {
+      ...req.body,
+      userId,
+  
+    };
+    console.log(profileData , 'profileData');
+    
 
-  } catch (error) {
-    console.error("Resend OTP Error:", error);
-    res.status(500).json({ message: "Failed to resend OTP", error });
+    const profile = await this.service.createStudentProfile(profileData ,file);
+    res.status(201).json(profile);
+  } catch (error: any) {
+    console.error("Create profile error:", error);
+    res.status(400).json({ message: error.message || "Failed to create profile" });
   }
 };
+
+
+
+
+ 
+
+ public getStudentProfile = async (req: AuthRequest, res: Response) : Promise<void> => {
+  try {
+
+    console.log('getstudentProfile');
+    
+    const userId = req.userId; // assuming JWT middleware adds `user` to req
+    console.log(userId , 'userId');
+    
+
+    if(!userId){
+      res.status(401).json({ message : "Unauthorized: No user ID found"})
+      return
+    }
+    const profile = await this.service.getStudentProfile(userId);
+    console.log(profile , 'profile');
+    
+
+    if (!profile) {
+       res.status(404).json({ message: "Profile not found" });
+      return
+    }
+
+    res.status(200).json(profile);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+  
+
 
 
 }

@@ -23,6 +23,13 @@ export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRep
         }
      }
 
+     async findByRole(role : string) : Promise < Iuser[] > {
+      return User.find({ role });
+     }
+
+    async findById(id: string): Promise<Iuser | null> {
+          return await User.findById(id);
+    }
 
 }
 
