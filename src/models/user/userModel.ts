@@ -14,8 +14,7 @@ export interface Iuser extends Document  {
     bio:string
     createdAt : Date
     updatedAt : Date
-    resetToken : string
-    tokenExpiry : number
+   
 
 }
 
@@ -54,8 +53,8 @@ const userSchema = new mongoose.Schema({
     },
     status:{
             type:String,
-            enum:["pending","approved","rejected"],
-            default:"pending"
+            enum:["applied","notApplied"],
+            default:"notApplied"
     },
     title:{
             type:String,
@@ -63,12 +62,7 @@ const userSchema = new mongoose.Schema({
     bio:{
             type:String,  
     },
-    resetToken : {
-            type : String
-    },
-    tokenExpiry : {
-            type : Number
-    }
+  
 },
 { 
     timestamps : true

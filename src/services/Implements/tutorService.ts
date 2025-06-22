@@ -3,6 +3,10 @@ import cloudinary from "../../utils/cloudinaryConfig";
 import { ITutorService } from "../Interfaces/ItutorService";
 import { ItutorRepository } from "../../repositories/Interfaces/ItutorRepository";
 import { UploadApiResponse } from "cloudinary";
+import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
+import User from '../../models/user/userModel'
+import { uploadToCloudinary } from "../../utils/cloudinaryUpload"; // adjust path
+import TutorProfile from "../../models/tutor/tutorModel"
 
 export class TutorService implements ITutorService {
   private TutorRepository: ItutorRepository;
@@ -10,41 +14,70 @@ export class TutorService implements ITutorService {
   constructor(TutorRepository: ItutorRepository) {
     this.TutorRepository = TutorRepository;
   }
-
- public async applyForTutor(files: Express.Multer.File[]): Promise<any> {
+public async applyForTutor(
+  userId: string,
+  files: Express.Multer.File[],
+  formData: { title: string; bio: string; skills: string; experience: string }
+) {
   try {
-    console.log('here we at intial state of service');
-    console.log("Received files:", files);
+    // Upload files to Cloudinary
+    const uploadResults = await Promise.all(files.map(file => uploadToCloudinary(file)));
+    const documentUrls = uploadResults.map(result => result.secure_url);
 
-    const uploadPromises = files.map((file) => {
-      const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-      return cloudinary.uploader.upload(fileStr, {
-        folder: "tutor_documents",
-      }) as Promise<UploadApiResponse>;
+    // Save tutor application with additional info
+    const result = await this.TutorRepository.saveTutorApplication(userId, {
+      title: formData.title,
+      bio: formData.bio,
+      skills: formData.skills,
+      experience: formData.experience,
+      documents: documentUrls,
     });
 
-    const uploadResults = await Promise.all(uploadPromises);
-    
-    console.log('here we at intial state of service 22 ');
-    const documentUrls = uploadResults.map((result) => result.secure_url);
+    // Update user status
+    await User.findByIdAndUpdate(userId, { status: "applied" });
 
-   console.log("Uploading complete. Document URLs:", documentUrls);
-
-const result = await this.TutorRepository.saveTutorApplication(documentUrls);
-
-console.log("Saved to DB. Result:", result);
-
-
-    return result;
+    return { success: true, application: result };
   } catch (error) {
-    console.error("Cloudinary upload failed:", error);
+    console.error("Error applying for tutor:", error);
     throw error;
   }
 }
 
+
 public async getApplicationStatus(userId: string) {
   return this.TutorRepository.findByUserId(userId);
 }
+
+
+public async createTutorProfile(profileData: any, file: Express.Multer.File): Promise<any> {
+  console.log('Creating profile for the student');
+
+  const existing = await TutorProfile.findOne({ userId: profileData.userId });
+  if (existing) {
+    throw new Error("Profile already exists");
+  }
+
+  const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+  const uploadResult = await cloudinary.uploader.upload(fileStr, { folder: "profile_pictures" });
+  console.log(fileStr ,'fileStr at userSservie');
+  console.log(uploadResult , 'uploadResult at userService');
+  
+  
+
+  const profileDataWithImage = {
+    ...profileData,
+    profileImage: uploadResult.secure_url, // 👈 update according to your schema
+  };
+  console.log(profileDataWithImage , 'profileDataWIthImage');
+  
+
+  return await TutorProfile.create(profileDataWithImage);
+}
+
+ async getTutorProfile (userId: string) : Promise<any>  {
+  return await TutorProfile.findOne({ userId : userId });
+};
+
 
 
 }

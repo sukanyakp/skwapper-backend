@@ -1,25 +1,49 @@
-import mongoose, { Document, Schema } from "mongoose";
+// models/tutorProfile.model.ts
+import mongoose from "mongoose";
 
-// Interface for Tutor
-export interface ITutor extends Document {
-    user : mongoose.Types.ObjectId;
-    isApproved : Boolean
-    status : 'pending' | 'approved' | 'rejected'
-    title ?: string
-    bio ?: string
-    subjects ?: string[]
-}
-
-// Schema
-const tutorSchema = new Schema <ITutor>({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  isApproved: { type: Boolean, default: false },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
-  title: { type : String},
-  bio: { type : String},
-  subjects: [{ type : String}], 
+const tutorProfileSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
+  skills: {
+    type: [String], // allow multiple instruments
+    required: true,
+  },
+  experience: {
+    type: Number,
+    required: true,
+  },
+  location: {
+    type: String,
+    default: "",
+  },
+  hourlyRate: {
+    type: Number,
+    default: 0,
+  },
+  availability: {
+    type: String, // or even a custom object with days/times
+    default: "",
+  },
+  profileImage: {
+    type: String,
+    default: "",
+  }
+}, {
+  timestamps: true
 });
 
+const TutorProfile = mongoose.model("TutorProfile", tutorProfileSchema);
 
-// Export Model
-export default mongoose.model<ITutor> ('Tutor' , tutorSchema)
+export default TutorProfile;

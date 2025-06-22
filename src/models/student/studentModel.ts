@@ -1,20 +1,42 @@
-import mongoose, { Document, Schema } from "mongoose";
+// models/studentProfile.model.ts
+import mongoose from "mongoose";
 
-// Interface for Student
-export interface IStudent extends Document {
-  user: mongoose.Types.ObjectId;                
-  enrolledCourses: mongoose.Types.ObjectId[];   
-//   preferences?: Record<string, any>;            // Optional preferences object
-}
+const studentProfileSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // assuming you have a User model
+    required: true,
+    unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
+  instrument: {
+    type: String,
+    required: true,
+  },
+  experience: {
+    type: Number,
+    default: 0,
+  },
+  location: {
+    type: String,
+    default: "",
+  },
 
-// Schema
-const studentSchema = new Schema<IStudent>({
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  enrolledCourses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
-//   preferences: { type: Schema.Types.Mixed }, // or Schema.Types.Map if you prefer maps
+  profileImage : {
+    type : String,
+    default : ""
+  }
 }, {
   timestamps: true
 });
 
-// Export Model
-export default mongoose.model<IStudent>('Student', studentSchema);
+const StudentProfile = mongoose.model("StudentProfile", studentProfileSchema);
+
+export default StudentProfile;

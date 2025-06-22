@@ -1,4 +1,5 @@
 
+import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 import User, { Iuser } from "../../models/user/userModel";
 import { IAdminRepository } from "../Interfaces/IadminRepository";
 import { BaseRepository } from "./baseRepository";
@@ -23,6 +24,22 @@ export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRep
         }
      }
 
+     async findByRole(role : string) : Promise < Iuser[] > {
+      return User.find({ role });
+     }
+
+    async findById(id: string): Promise<Iuser | null> {
+          return await User.findById(id);
+    }
+
+
+     public async toggleBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
+    return await tutorApplicationModel.findOneAndUpdate(
+     { user : userId},
+      { isBlocked: block },
+      { new: true }
+    );
+  }
 
 }
 
