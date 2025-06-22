@@ -129,6 +129,12 @@ export class AdminService implements IAdminService {
   return application; // returns null if not found
 }
 
-
+public async toggleBlockUser(userId: string, block: boolean) {
+    const user = await this.UserRepository.toggleBlockStatus(userId, block);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  }
 
 }

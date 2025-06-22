@@ -11,6 +11,7 @@ interface TutorApplicationData {
   experience: string;
   documents: string[];
   status : string
+  isBlocked : Boolean
 }
 
 export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepository {
@@ -32,7 +33,8 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
       bio: data.bio,
       skills: data.skills,
       experience: data.experience,
-      status : 'pending'
+      status : 'pending',
+      isBlocked : false
     });
 
     const saved = await newApplication.save();

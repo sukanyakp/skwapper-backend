@@ -38,4 +38,10 @@ router.get(
   tutorControllers.checkTutorApplicationStatus
 )
 
+
+
+router.post('/profile',verifyToken,upload.single("image"), tutorControllers.createProfile)
+router.get('/profile',verifyToken ,tutorControllers.getTutorProfile)
+
+
 export default router;

@@ -13,6 +13,7 @@ export interface ITutorApplication extends Document {
   reviewedBy?: string; // Admin user ID
   appliedAt: Date;
   reviewedAt?: Date;
+  isBlocked : boolean
 }
 
 
@@ -64,6 +65,9 @@ const tutorApplicationSchema = new Schema<ITutorApplication>({
   reviewedAt: {
     type: Date,
   },
+  isBlocked : {
+    type : Boolean
+  }
 });
   
 

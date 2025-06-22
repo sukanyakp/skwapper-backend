@@ -114,4 +114,64 @@ public  checkTutorApplicationStatus = async (req: AuthRequest, res: Response) : 
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+
+
+  public createProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    console.log('at createProfile controller');
+
+    const userId = req.userId;
+    const file = req.file as Express.Multer.File; // 🔥 Multer + Cloudinary gives this
+
+    console.log(file ,'files');
+    
+
+    const profileData = {
+      ...req.body,
+      userId,
+  
+    };
+    console.log(profileData , 'profileData');
+    
+
+    const profile = await this.service.createTutorProfile(profileData ,file);
+    res.status(201).json(profile);
+  } catch (error: any) {
+    console.error("Create profile error:", error);
+    res.status(400).json({ message: error.message || "Failed to create profile" });
+  }
+};
+
+ public getTutorProfile = async (req: AuthRequest, res: Response) : Promise<void> => {
+  try {
+
+    console.log('getstudentProfile');
+    
+    const userId = req.userId; // assuming JWT middleware adds `user` to req
+    console.log(userId , 'userId');
+    
+
+    if(!userId){
+      res.status(401).json({ message : "Unauthorized: No user ID found"})
+      return
+    }
+    const profile = await this.service.getTutorProfile(userId);
+    console.log(profile , 'profile');
+    
+
+    if (!profile) {
+       res.status(404).json({ message: "Profile not found" });
+      return
+    }
+
+    res.status(200).json(profile);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
 }

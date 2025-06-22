@@ -52,4 +52,10 @@ adminRoutes.patch(
   adminController.reviewTutorApplication
 );
 
+
+
+// routes/adminRoutes.ts
+adminRoutes.patch("/users/:userId/block-toggle", verifyToken, adminController.toggleBlockUser);
+
+
 export default adminRoutes;

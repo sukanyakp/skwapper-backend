@@ -102,4 +102,37 @@ public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise
             res.status(500).json({ message: "Server error while updating tutor status" });
         }
     };
+
+
+
+ public toggleBlockUser = async (req: Request, res: Response) : Promise <void>=> {
+  const { userId } = req.params;
+  
+  const { block } = req.body;
+  console.log(userId ,'here we are at blockUser');
+  
+
+  try {
+    const user = await this.service.toggleBlockUser(userId, block);
+    console.log(user , 'user at toggleBlockUser');
+    
+
+    res.status(200).json({
+      message: `User ${block ? "blocked" : "unblocked"} successfully`,
+      user,
+    });
+
+    console.log('everything is ok?');
+    
+  } catch (error: any) {
+    const status = error.message === "User not found" ? 404 : 500;
+    res.status(status).json({ message: error.message || "Internal Server Error" });
+  }
+};
+
+
+
+
+
+
 }
