@@ -57,6 +57,8 @@ adminRoutes.patch(
 // routes/adminRoutes.ts
 adminRoutes.patch("/users/:userId/block-toggle", verifyToken, adminController.toggleBlockUser);
 
+adminRoutes.get("/users",adminController.getAllUsers)
+
 
 
 export default adminRoutes;

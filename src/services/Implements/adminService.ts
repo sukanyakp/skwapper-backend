@@ -1,6 +1,6 @@
 
 import { IAdminService } from "../Interfaces/IadminService";
-import User from "../../models/user/userModel";
+import User, { Iuser } from "../../models/user/userModel";
 import { IAdminRepository } from "../../repositories/Interfaces/IadminRepository";
 import TutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 
@@ -81,6 +81,11 @@ public async toggleBlockUser(userId: string, block: boolean) {
       throw new Error("User not found");
     }
     return user;
+  }
+
+
+    public async getAllUsers(): Promise<Iuser[]> {
+    return this.UserRepository.getAllUsers();
   }
 
 

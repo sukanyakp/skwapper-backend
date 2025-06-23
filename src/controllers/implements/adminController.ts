@@ -133,5 +133,18 @@ public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise
 
 
 
+  public getAllUsers = async (req: Request, res: Response) => {
+    try {
+      const users = await this.service.getAllUsers();
+      res.status(200).json(users);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      res.status(500).json({ message: "Server error while fetching users" });
+    }
+  };
+
+
+
+
 
 }
