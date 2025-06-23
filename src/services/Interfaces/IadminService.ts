@@ -1,13 +1,7 @@
 import { Iuser } from "../../models/user/userModel";
-import { CourseData } from "../Implements/adminService";
 
 export interface IAdminService {
-    // register(name: string , email : string , password : string ): Promise<Iuser | null> 
-    // login(email: string, password: string): Promise<{
-    //       accessToken: string;
-    //       refreshToken: string;
-    //       admin: Iuser;
-    //       } | null> 
+
     getTutorApplications(): Promise<any[]>;
     reviewTutorApplication(
     applicationId: string,
@@ -19,5 +13,5 @@ export interface IAdminService {
     updateTutorStatus(id: string, action: string): Promise<Iuser | null> 
     getTutorApplicationById(applicationId: string): Promise<any | null>
     toggleBlockUser(userId: string, block: boolean) : Promise<any | null>
-    createCourse  (data: CourseData) : Promise<any>
+ 
 }

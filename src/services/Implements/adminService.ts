@@ -5,17 +5,6 @@ import { IAdminRepository } from "../../repositories/Interfaces/IadminRepository
 import TutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 
 
-export interface CourseData {
-  title: string;
-  description : string
-  // song: string;
-  // movie: string;
-  // instrument: string;
-  // videoUrl: string;
-  // tutorId: Schema.Types.ObjectId; // or string if that's how you use it
-  // language?: string | null; // <-- Allow null
-  // add other fields if needed
-}
 
 
 export class AdminService implements IAdminService {
@@ -98,9 +87,6 @@ public async toggleBlockUser(userId: string, block: boolean) {
 
 
 
-public async createCourse  (data: CourseData) : Promise<any> {
-  return await this.UserRepository.saveCourse(data);
-};
 
 
 }

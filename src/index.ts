@@ -5,6 +5,7 @@ import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
 import tutorRoutes from './routes/tutorRoutes'
+import courseRoutes from './routes/courseRoutes'
 import session from 'express-session'
 import db from '../src/config/db'
 import cookieParser from "cookie-parser";
@@ -35,6 +36,7 @@ app.use('/auth',authRoutes)
 app.use('/user', userRoutes)
 app.use('/admin',adminRoutes)
 app.use('/tutor',tutorRoutes)
+app.use('/courses',courseRoutes)
 
 
 app.listen(PORT, () => {
