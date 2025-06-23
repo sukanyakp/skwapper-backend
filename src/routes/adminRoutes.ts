@@ -57,5 +57,7 @@ adminRoutes.patch(
 // routes/adminRoutes.ts
 adminRoutes.patch("/users/:userId/block-toggle", verifyToken, adminController.toggleBlockUser);
 
+adminRoutes.post("/courses",adminController.createNewCourse)
+
 
 export default adminRoutes;

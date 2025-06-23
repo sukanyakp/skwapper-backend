@@ -4,6 +4,20 @@ import User from "../../models/user/userModel";
 import { IAdminRepository } from "../../repositories/Interfaces/IadminRepository";
 import TutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 
+
+export interface CourseData {
+  title: string;
+  description : string
+  // song: string;
+  // movie: string;
+  // instrument: string;
+  // videoUrl: string;
+  // tutorId: Schema.Types.ObjectId; // or string if that's how you use it
+  // language?: string | null; // <-- Allow null
+  // add other fields if needed
+}
+
+
 export class AdminService implements IAdminService {
 
     private UserRepository: IAdminRepository;
@@ -11,63 +25,6 @@ export class AdminService implements IAdminService {
     constructor(UserRepository: IAdminRepository) {
             this.UserRepository = UserRepository;
           }
-    
-  
-//   public async register(name: string, email: string, password: string): Promise<Iuser | null> {
-//   const existingUser = await this.UserRepository.findByEmail(email);
-//   console.log(existingUser?.role , 'existingUser.role');
-  
-
-//   if (existingUser) {
-//     // If already admin, return null 
-//     if (existingUser.role === "admin") {
-//       return null;
-//     }
-
-//     // Update role to admin if not already
-//     existingUser.role = "admin";
-//     await existingUser.save();
-//     return existingUser;
-//   }
-
-//   // New admin registration
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//   const newAdmin = new User({
-//     name,
-//     email,
-//     password: hashedPassword,
-//     role: "admin", // explicitly set role to admin
-//   });
-
-//   await newAdmin.save();
-//   return newAdmin;
-// }
-
-
-
-// public async login(email: string, password: string): Promise<{
-//   accessToken: string;
-//   refreshToken: string;
-//   admin: Iuser;
-// } | null> {
-//   const user = await this.UserRepository.findByEmail(email);
-
-//   // Validate admin user
-//   if (!user || user.role !== 'admin') return null;
-
-//   const isMatch = await bcrypt.compare(password, user.password);
-//   if (!isMatch) return null;
-
-//   // Generate tokens
-//   const accessToken = generateAccessToken({ id: user._id, email: user.email, role: user.role });
-//   const refreshToken = generateRefreshToken({ id: user._id, role: user.role });
-
-//   return {
-//     accessToken,
-//     refreshToken,
-//     admin: user,
-//   };
-// };
 
  public async getTutors(): Promise<any[]> {
     return User.find({ role: "tutor" });
@@ -136,5 +93,14 @@ public async toggleBlockUser(userId: string, block: boolean) {
     }
     return user;
   }
+
+
+
+
+
+public async createCourse  (data: CourseData) : Promise<any> {
+  return await this.UserRepository.saveCourse(data);
+};
+
 
 }
