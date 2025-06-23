@@ -42,6 +42,11 @@ export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRep
     );
   }
 
+   public async getAllUsers(): Promise<Iuser[]> {
+    return await User.find({}, "-password"); // exclude password field
+  }
+
+
 
 
 }

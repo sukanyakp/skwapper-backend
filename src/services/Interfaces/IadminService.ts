@@ -13,5 +13,6 @@ export interface IAdminService {
     updateTutorStatus(id: string, action: string): Promise<Iuser | null> 
     getTutorApplicationById(applicationId: string): Promise<any | null>
     toggleBlockUser(userId: string, block: boolean) : Promise<any | null>
+    getAllUsers(): Promise<Iuser[]>
  
 }
