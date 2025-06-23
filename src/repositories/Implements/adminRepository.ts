@@ -1,6 +1,8 @@
 
+import courseModel from "../../models/admin/courseModel";
 import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 import User, { Iuser } from "../../models/user/userModel";
+import { CourseData } from "../../services/Implements/adminService";
 import { IAdminRepository } from "../Interfaces/IadminRepository";
 import { BaseRepository } from "./baseRepository";
 
@@ -40,6 +42,13 @@ export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRep
       { new: true }
     );
   }
+
+
+  public async saveCourse  (data: any) : Promise<CourseData | null> {
+  const newCourse = new courseModel(data);
+  return await newCourse.save();
+   
+};
 
 }
 

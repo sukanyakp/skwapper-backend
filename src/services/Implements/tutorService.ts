@@ -6,7 +6,7 @@ import { UploadApiResponse } from "cloudinary";
 import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 import User from '../../models/user/userModel'
 import { uploadToCloudinary } from "../../utils/cloudinaryUpload"; // adjust path
-import TutorProfile from "../../models/tutor/tutorModel"
+import TutorProfile from "../../models/tutor/tutorProfile"
 
 export class TutorService implements ITutorService {
   private TutorRepository: ItutorRepository;
