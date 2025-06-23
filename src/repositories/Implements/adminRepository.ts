@@ -1,5 +1,5 @@
 
-import courseModel from "../../models/admin/courseModel";
+import CourseModel from "../../models/admin/courseModel";
 import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 import User, { Iuser } from "../../models/user/userModel";
 import { CourseData } from "../../services/Implements/adminService";
@@ -45,10 +45,13 @@ export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRep
 
 
   public async saveCourse  (data: any) : Promise<CourseData | null> {
-  const newCourse = new courseModel(data);
+  const newCourse = new CourseModel(data);
   return await newCourse.save();
-   
-};
+  };
+
+   public async getAllCourses() {
+    return await CourseModel.find();
+  }
 
 }
 
