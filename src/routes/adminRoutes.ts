@@ -22,18 +22,21 @@ adminRoutes.get(
 
 adminRoutes.patch(
   '/tutors/:id/:action',
+  verifyToken,
   // adminAuthMiddleware,
   adminController.updateTutorStatus
 );
 
 adminRoutes.get(
   '/tutor-applications',
+   verifyToken,
   // adminAuthMiddleware,
   adminController.getTutorApplications  // This is the one (admin/tutors)
 );
 
 adminRoutes.get(
   "/tutor-applications/:applicationId",
+   verifyToken,
   // adminAuthMiddleware,
   adminController.getTutorApplicationById
 )
@@ -42,6 +45,7 @@ adminRoutes.get(
 
 adminRoutes.patch(
   '/tutor-applications/:applicationId/review',
+   verifyToken,
   // adminAuthMiddleware,
   adminController.reviewTutorApplication
 );
@@ -51,11 +55,13 @@ adminRoutes.patch(
 // routes/adminRoutes.ts
 adminRoutes.patch(
   "/users/:userId/block-toggle", 
+   verifyToken,
   // adminAuthMiddleware, 
   adminController.toggleBlockUser);
 
 adminRoutes.get(
   "/users" ,
+   verifyToken,
   // adminAuthMiddleware,
   adminController.getAllUsers)
 

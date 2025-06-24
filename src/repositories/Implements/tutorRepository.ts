@@ -6,7 +6,7 @@ import User from "../../models/user/userModel";
 import TutorialModel, {  ITutorial } from "../../models/tutor/TutorialModel";
 
 interface TutorApplicationData {
-  title: string;
+  category: string;
   bio: string;
   skills: string;
   experience: string;
@@ -30,7 +30,7 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
     const newApplication = new TutorApplication({
       user: userId,
       documents: data.documents,
-      title: data.title,
+      title: data.category,
       bio: data.bio,
       skills: data.skills,
       experience: data.experience,

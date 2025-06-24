@@ -2,7 +2,7 @@ import {  ITutorial } from "../../models/tutor/TutorialModel";
 import { Iuser } from "../../models/user/userModel";
 
 interface TutorApplicationData {
-  title: string;
+  category: string;
   bio: string;
   skills: string;
   experience: string;

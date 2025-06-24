@@ -7,6 +7,7 @@ import { generateOTP } from "../../utils/otp.util";
 import { sendOtpEmail } from "../../utils/email.util";
 import StudentProfile from "../../models/student/studentModel";
 import cloudinary from "../../utils/cloudinaryConfig";
+import { ITutorProfile } from "../../models/tutor/tutorProfile";
 
 
 export class UserService implements IuserService {
@@ -45,6 +46,25 @@ public async createStudentProfile(profileData: any, file: Express.Multer.File): 
  async getStudentProfile (userId: string) : Promise<any>  {
   return await StudentProfile.findOne({ userId : userId });
 };
+
+
+async getAllApprovedTutors(): Promise<ITutorProfile[]> {
+    return await this.UserRepository.findApprovedTutors();
+   
+  }
+
+public async getTutorById(tutorId: string): Promise<ITutorProfile> {
+  if (!tutorId) {
+    throw new Error("Tutor ID is required");
+  }
+
+  const tutor = await this.UserRepository.findTutorById(tutorId);
+  if (!tutor) {
+    throw new Error("Tutor not found");
+  }
+
+  return tutor;
+}
 
 
 

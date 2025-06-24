@@ -25,20 +25,20 @@ if (!userId) {
   return res.status(401).json({ message: "Unauthorized: Missing user ID" });
 }
 
-  const { title, bio, skills, experience } = req.body;
+  const { category, bio, skills, experience } = req.body;
 
-    if (!title || !bio || !skills || !experience) {
+    if (!category || !bio || !skills || !experience) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
   
 
   console.log(files, 'files at TutorController');
-  console.log({ title, bio, skills, experience }, 'fields at TutorController');
+  console.log({ category, bio, skills, experience }, 'fields at TutorController');
 
   try {
     const result = await this.service.applyForTutor(userId, files, {
-      title,
+      category,
       bio,
       skills,
       experience,
