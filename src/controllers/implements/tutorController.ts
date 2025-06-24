@@ -178,8 +178,11 @@ public createCourse = async (req: AuthRequest, res: Response) => {
     console.log('tutor createCrs');
     
     const tutorId = req?.userId ; 
+    console.log(req.file);
+     const file = req.file as Express.Multer.File; 
     
-    const newCourse = await this.service.createCourse(req.body, req.file, tutorId);
+    
+    const newCourse = await this.service.createCourse(req.body, file, tutorId);
     res.status(201).json(newCourse);
   } catch (error) {
     console.error("Course creation error:", error);
@@ -187,6 +190,26 @@ public createCourse = async (req: AuthRequest, res: Response) => {
   }
 };
 
+
+public getMyCourses = async (req: AuthRequest, res: Response) : Promise<void> => {
+    try {
+      console.log('we are at getMyCOurses');
+      
+      const tutorId = req?.userId;
+      if (!tutorId) {
+      res.status(401).json({ message: "Unauthorized: Tutor ID missing" });
+      return;
+    }
+      
+      const courses = await this.service.getCoursesByTutor(tutorId);
+      console.log(courses ,'cour');
+      
+      res.status(200).json(courses);
+    } catch (error) {
+      console.error("Error fetching tutor courses:", error);
+      res.status(500).json({ message: "Failed to fetch your courses" });
+    }
+  };
 
 
 

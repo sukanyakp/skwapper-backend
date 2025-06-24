@@ -12,17 +12,17 @@ export class CourseController {
     
     public createNewCourse = async (req: Request, res: Response) : Promise<void>=> {
       try {
-        const { title,description } = req.body;
-        console.log(title,description , 'create new course');
+        const { category ,description } = req.body;
+        console.log(category,description , 'create new course');
         
     
-        if (!title || !description ) {
+        if (!category || !description ) {
            res.status(400).json({ message: "Missing required fields" });
            return
         }
     
         const course = await this.service.createCourse({
-          title,
+          category,
           description
          
         });

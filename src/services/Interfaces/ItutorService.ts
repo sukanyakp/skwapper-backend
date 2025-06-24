@@ -1,4 +1,4 @@
-import {  ITutorial } from "../../models/tutor/courseModel";
+import {  ITutorial } from "../../models/tutor/TutorialModel";
 import { Iuser } from "../../models/user/userModel";
 
 export interface ITutorService {
@@ -15,4 +15,6 @@ export interface ITutorService {
     file?: Express.Multer.File,
     tutorId?: string
   ): Promise<ITutorial> 
+
+  getCoursesByTutor(tutorId: string) : Promise<ITutorial[]>
 }
