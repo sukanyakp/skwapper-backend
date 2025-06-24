@@ -4,6 +4,7 @@ import { BaseRepository } from "./baseRepository";
 import { Iuser } from "../../models/user/userModel";
 import User from "../../models/user/userModel";
 import TutorialModel, {  ITutorial } from "../../models/tutor/TutorialModel";
+import Notification from "../../models/notification/notificationModel";
 
 interface TutorApplicationData {
   category: string;
@@ -60,5 +61,12 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
   
     return await TutorialModel.find({ tutorId }).sort({ createdAt: -1 });
   }
+
+  public async getSessionRequests(tutorId: string):Promise<any> {
+  return await Notification.find({ recipientId: tutorId })
+    .populate("senderId", "name email") // populate student details
+    .sort({ createdAt: -1 });
+}
+
 
 }
