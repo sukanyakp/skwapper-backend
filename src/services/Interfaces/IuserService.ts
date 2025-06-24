@@ -1,5 +1,4 @@
 import { ITutorProfile } from "../../models/tutor/tutorProfile";
-import { Iuser } from "../../models/user/userModel";
 
 export interface IuserService {
 
@@ -7,4 +6,8 @@ export interface IuserService {
   getStudentProfile (userId: string) : Promise<any>
   getAllApprovedTutors(): Promise<ITutorProfile[]>
   getTutorById(tutorId: string) : Promise<ITutorProfile>
+  createSessionRequestNotification(
+  tutorId: string,
+  studentId: string
+  ): Promise<any>
 }

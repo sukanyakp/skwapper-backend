@@ -31,6 +31,8 @@ userRoutes.post('/profile',verifyToken,upload.single("image"), userControllers.c
 userRoutes.get('/profile',verifyToken ,userControllers.getStudentProfile)
 userRoutes.get('/tutors', userControllers.getApprovedTutors)
 userRoutes.get('/tutor/:tutorId' ,userControllers.getTutorById)
+userRoutes.post('/tutor/request/:tutorId', verifyToken, userControllers.sendSessionRequest);
+
 
 
 export default userRoutes
