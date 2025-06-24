@@ -2,8 +2,8 @@ import express from 'express';
 import { AdminController } from '../controllers/implements/adminController';
 import { AdminRepository } from '../repositories/Implements/adminRepository';
 import { AdminService } from '../services/Implements/adminService';
-import { verifyToken } from '../middlewares/authMiddleware'; // ✅ Auth check
-import { verifyRole } from '../middlewares/verifyRole';   // ✅ Role check
+import { verifyToken } from '../middlewares/authMiddleware';
+import { verifyRole } from '../middlewares/verifyRole';   
 
 const adminRepositoryInstance = new AdminRepository();
 const adminServices = new AdminService(adminRepositoryInstance);
@@ -11,35 +11,30 @@ const adminController = new AdminController(adminServices);
 
 const adminRoutes = express.Router();                                                                                                           
 
-// Public routes (no auth needed)
-// adminRoutes.post('/register', adminController.register);
-// adminRoutes.post('/login', adminController.login);
 
-// ✅ Protected routes: verifyToken + verifyRole("admin")
+const adminAuthMiddleware = [verifyToken, verifyRole('admin')];
+
 adminRoutes.get(
   '/tutors',
-  verifyToken,
-  // verifyRole('admin'),
+  adminAuthMiddleware,
   adminController.getTutors
 );
 
 adminRoutes.patch(
   '/tutors/:id/:action',
-  verifyToken,
-  // verifyRole('admin'),
+  // adminAuthMiddleware,
   adminController.updateTutorStatus
 );
 
 adminRoutes.get(
   '/tutor-applications',
-  // verifyToken,
-  // verifyRole('admin'),
-  adminController.getTutorApplications
+  // adminAuthMiddleware,
+  adminController.getTutorApplications  // This is the one (admin/tutors)
 );
 
 adminRoutes.get(
   "/tutor-applications/:applicationId",
-  // verifyRole('admin')
+  // adminAuthMiddleware,
   adminController.getTutorApplicationById
 )
 
@@ -47,17 +42,23 @@ adminRoutes.get(
 
 adminRoutes.patch(
   '/tutor-applications/:applicationId/review',
-  // verifyToken,
-  // verifyRole('admin'),
+  // adminAuthMiddleware,
   adminController.reviewTutorApplication
 );
 
 
 
 // routes/adminRoutes.ts
-adminRoutes.patch("/users/:userId/block-toggle", verifyToken, adminController.toggleBlockUser);
+adminRoutes.patch(
+  "/users/:userId/block-toggle", 
+  // adminAuthMiddleware, 
+  adminController.toggleBlockUser);
 
-adminRoutes.get("/users",adminController.getAllUsers)
+adminRoutes.get(
+  "/users" ,
+  // adminAuthMiddleware,
+  adminController.getAllUsers)
+
 
 
 

@@ -57,17 +57,24 @@ async register(user: Iuser): Promise<string> {
     
     console.log( user.role ,'role: user.role');
     console.log(user , 'here is the user ');
-    
+    console.log("Entered password:", password);
+    console.log("Stored hash in DB:", user.password);
 
+    
     // 2. Validate password
     const isPasswordValid = await comparePassword(password, user.password);
+    console.log('a' ,isPasswordValid);
+
     if (!isPasswordValid) {
       throw new Error("Invalid password");
     }
+    console.log('b ,isPasswordValid');
 
     // 3. Generate tokens
     const accessToken = generateAccessToken({ id: user._id, email: user.email ,role: user.role});
     const refreshToken = generateRefreshToken({ id: user._id });
+    
+console.log('c');
 
     // console.log( accessToken,'accessTokend ');
     // console.log( refreshToken,'accessTokend ');

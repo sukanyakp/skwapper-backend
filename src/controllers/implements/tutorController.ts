@@ -173,5 +173,21 @@ public  checkTutorApplicationStatus = async (req: AuthRequest, res: Response) : 
 };
 
 
+public createCourse = async (req: AuthRequest, res: Response) => {
+  try {
+    console.log('tutor createCrs');
+    
+    const tutorId = req?.userId ; 
+    
+    const newCourse = await this.service.createCourse(req.body, req.file, tutorId);
+    res.status(201).json(newCourse);
+  } catch (error) {
+    console.error("Course creation error:", error);
+    res.status(500).json({ message: "Failed to create course" });
+  }
+};
+
+
+
 
 }

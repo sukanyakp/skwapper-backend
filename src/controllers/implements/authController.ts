@@ -36,6 +36,8 @@ export class AuthController {
 
     // Auth service handles password verification & user fetching
     const { accessToken, refreshToken, user } = await this.service.login(email, password);
+    console.log(accessToken ,'accessToken at the backend');
+    
 
     // Role-based logic (optional: enforce only certain roles here)
     const allowedRoles = ["student", "tutor", "admin"];
@@ -165,6 +167,8 @@ public resetPassword = async(req : Request , res : Response) : Promise<void> =>{
 public refreshToken = async (req: Request, res: Response): Promise<void> => {
   try {
     const token = req.cookies.refreshToken;
+    console.log('heloo refreshToken' ,token);
+    
 
     if (!token) {
       res.status(403).json({ message: "Refresh token not found" });

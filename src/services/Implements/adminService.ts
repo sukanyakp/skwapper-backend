@@ -47,12 +47,25 @@ export class AdminService implements IAdminService {
     rejectionReason?: string
   ): Promise<any> {
     const application = await TutorApplicationModel.findById(applicationId);
+    
     if (!application) return null;
-
+    
     const userId = application.user;
-
+    const user = await User.findById(userId)
+    console.log(user , 'here is the user');
+    
+    
     // Update application
     application.status = action;
+    
+    if (!user) throw new Error("User not found");
+    if(application.status == "approved"){
+       user.role = 'tutor'
+    }else{
+       user.role = 'student'
+    }
+
+    await user.save();
     // application.reviewedBy = adminId;
     // application.reviewedAt = new Date();
     // if (action === "rejected" && rejectionReason) {
@@ -76,12 +89,24 @@ export class AdminService implements IAdminService {
 }
 
 public async toggleBlockUser(userId: string, block: boolean) {
-    const user = await this.UserRepository.toggleBlockStatus(userId, block);
-    if (!user) {
-      throw new Error("User not found");
-    }
-    return user;
+  const existingUser = await User.findById(userId);
+
+  if (!existingUser) {
+    throw new Error("User not found");
   }
+  console.log(existingUser.role ,'waht is the role of the user');
+  
+
+  let updatedUser;
+
+  if (existingUser.role === "tutor") {
+    updatedUser = await this.UserRepository.tutorBlockStatus(userId, block);
+  } else {
+    updatedUser = await this.UserRepository.userBlockStatus(userId, block);
+  }
+
+  return updatedUser;
+}
 
 
     public async getAllUsers(): Promise<Iuser[]> {

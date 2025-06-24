@@ -14,7 +14,7 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
   const token = authHeader.split(" ")[1];
 
   try {
-    console.log('b');
+  
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as { id?: string };
 
     if (!decoded.id) {
@@ -26,6 +26,8 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
     console.log(req.userId , 'req.userId');
 
     next();
+    console.log('next');
+    
   } catch (err: any) {
     console.error("JWT verification failed:", err);
 

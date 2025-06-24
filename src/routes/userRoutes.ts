@@ -22,15 +22,10 @@ const authControllers = new AuthController(authServices)
 const userRoutes = express.Router()
 
 
-// userRoutes.post('/signup',(req:Request, res:Response,next:NextFunction)=>(
-//     userControllers.register(req,res)
-// ))
-// userRoutes.post('/verify-otp' , userControllers.verifyOTp);
 userRoutes.post('/login',authControllers.login)
 userRoutes.post('/forgot-password' , authControllers.forgotPassword)
 
 userRoutes.post("/reset-password/:token", authControllers.resetPassword);
-// userRoutes.post('/resend-otp',userControllers.resendOtp)
 
 userRoutes.post('/profile',verifyToken,upload.single("image"), userControllers.createProfile)
 userRoutes.get('/profile',verifyToken ,userControllers.getStudentProfile)
