@@ -1,6 +1,6 @@
 
 export interface CourseData {
-  title: string;
+  category: string;
   description : string
   // song: string;
   // movie: string;

@@ -7,7 +7,7 @@ import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 import User from '../../models/user/userModel'
 import { uploadToCloudinary } from "../../utils/cloudinaryUpload"; // adjust path
 import TutorProfile from "../../models/tutor/tutorProfile"
-import { ITutorial } from "../../models/tutor/courseModel";
+import { ITutorial } from "../../models/tutor/TutorialModel";
 
 
 export class TutorService implements ITutorService {
@@ -81,7 +81,7 @@ public async createTutorProfile(profileData: any, file: Express.Multer.File): Pr
 };
 
 
-async createCourse  (
+async createCourse(
   data: any,
   file?: Express.Multer.File,
   tutorId?: string
@@ -89,9 +89,26 @@ async createCourse  (
   let thumbnailUrl = "";
 
   if (file) {
-    const result = (await cloudinary.uploader.upload(file.path)) as UploadApiResponse;
-    thumbnailUrl = result.secure_url;
+    // Convert buffer to base64 and upload to Cloudinary
+    const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+
+    try {
+      const uploadResult = await cloudinary.uploader.upload(fileStr, {
+        folder: "course_thumbnails", // you can customize the folder name
+      });
+
+      console.log("Upload result:", uploadResult);
+      thumbnailUrl = uploadResult.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload failed:", error);
+      throw new Error("Thumbnail upload failed");
+    }
   }
+  if(!tutorId){
+    throw new Error("tutor Id is not present")
+  }
+
+  const category = this.TutorRepository.findByUserId(tutorId)
 
   const courseData = {
     ...data,
@@ -99,13 +116,17 @@ async createCourse  (
     tutorId,
     thumbnail: thumbnailUrl,
   };
-  console.log(courseData ,'courseData at service');
-  
 
+  console.log("Final course data to be saved:", courseData);
   return await this.TutorRepository.createCourse(courseData);
-};
+}
 
 
+async getCoursesByTutor(tutorId: string): Promise<ITutorial[]> {
+  console.log(tutorId,'tutorId at service');
+  
+    return await this.TutorRepository.findCoursesByTutorId(tutorId);
+  }
 
 
 }

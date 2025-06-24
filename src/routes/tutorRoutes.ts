@@ -17,18 +17,18 @@ const tutorControllers = new TutorController(tutorService);
 
 const router = express.Router();
 
-// ✅ POST /tutor/apply (must be logged in as a user/tutor)
+// POST /tutor/apply (must be logged in as a user/tutor)
 router.post(
   "/apply",
-  verifyToken,                   // 🛡️ ensure user is authenticated
+  verifyToken,                   // ensure user is authenticated
   upload.array("documents"),
   tutorControllers.apply
 );
 
-// ✅ GET /tutor/status (optional: protect based on auth or role)
+//  GET /tutor/status (optional: protect based on auth or role)
 router.get(
   "/status",
-  verifyToken,                  // 🛡️ protect this if it's user-specific
+  verifyToken,                  // protect this if it's user-specific
   tutorControllers.checkStatus
 );
 
@@ -42,6 +42,6 @@ router.get(
 
 router.post('/profile',verifyToken,upload.single("image"), tutorControllers.createProfile)
 router.get('/profile',verifyToken ,tutorControllers.getTutorProfile)
-router.post('/course',verifyToken,tutorControllers.createCourse)
-
+router.post('/course',verifyToken,upload.single("thumbnail") ,tutorControllers.createCourse) //must match the name of the field used to send the image file from the frontend.
+router.get('/my-courses',verifyToken ,tutorControllers.getMyCourses)
 export default router;

@@ -3,7 +3,7 @@ import TutorApplication from "../../models/tutor/tutorApplicationModel";
 import { BaseRepository } from "./baseRepository";
 import { Iuser } from "../../models/user/userModel";
 import User from "../../models/user/userModel";
-import courseModel, {  ITutorial } from "../../models/tutor/courseModel";
+import TutorialModel, {  ITutorial } from "../../models/tutor/TutorialModel";
 
 interface TutorApplicationData {
   title: string;
@@ -45,13 +45,20 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
 
   // Optionally find tutor application by user
   public async findByUserId(userId: string): Promise<Iuser | null> {
-    return await User.findById(userId); // You probably meant this
+    return await User.findById(userId); 
   }
 
 
   public async createCourse  (courseData: Partial<ITutorial>): Promise<ITutorial>  {
-  const newCourse = new courseModel (courseData);
+  const newCourse = new TutorialModel (courseData);
   return await newCourse.save();
 };
+
+
+ async findCoursesByTutorId(tutorId: string): Promise<ITutorial[]> {
+  console.log(tutorId ,'tutorId');
+  
+    return await TutorialModel.find({ tutorId }).sort({ createdAt: -1 });
+  }
 
 }
