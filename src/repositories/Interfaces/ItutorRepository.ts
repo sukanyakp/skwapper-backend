@@ -13,4 +13,5 @@ export interface ItutorRepository {
   findByUserId(userId: string) : Promise<Iuser | null >
   createCourse  (courseData: Partial<ITutorial>): Promise<ITutorial>  
   findCoursesByTutorId(tutorId: string): Promise<ITutorial[]> 
+  getSessionRequests(tutorId: string):Promise<any>
 }

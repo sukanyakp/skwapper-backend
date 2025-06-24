@@ -212,5 +212,25 @@ public getMyCourses = async (req: AuthRequest, res: Response) : Promise<void> =>
   };
 
 
+  public getSessionRequests = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const tutorId = req.userId;
+    if (!tutorId) {
+     res.status(400).json({ message: "Tutor ID missing" });
+     return;
+    }
+     
+      
+
+    const requests = await this.service.getSessionRequests(tutorId);
+    res.status(200).json(requests);
+  } catch (error) {
+    console.error("Failed to fetch session requests:", error);
+    res.status(500).json({ message: "Failed to load requests" });
+  }
+};
+
+
+
 
 }

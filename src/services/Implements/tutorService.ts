@@ -129,4 +129,10 @@ async getCoursesByTutor(tutorId: string): Promise<ITutorial[]> {
   }
 
 
+  public async getSessionRequests(tutorId: string) : Promise<string>{
+  return await this.TutorRepository.getSessionRequests(tutorId);
+}
+
+
+
 }

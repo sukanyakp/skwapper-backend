@@ -17,4 +17,5 @@ export interface ITutorService {
   ): Promise<ITutorial> 
 
   getCoursesByTutor(tutorId: string) : Promise<ITutorial[]>
+  getSessionRequests(tutorId: string) : Promise<string>
 }
