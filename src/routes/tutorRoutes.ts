@@ -44,5 +44,6 @@ router.post('/profile',verifyToken,upload.single("image"), tutorControllers.crea
 router.get('/profile',verifyToken ,tutorControllers.getTutorProfile)
 router.post('/course',verifyToken,upload.single("thumbnail") ,tutorControllers.createCourse) //must match the name of the field used to send the image file from the frontend.
 router.get('/my-courses',verifyToken ,tutorControllers.getMyCourses)
-// router.get('/requests',tutorControllers.)
+router.get('/requests',verifyToken,tutorControllers.getSessionRequests)
+
 export default router;

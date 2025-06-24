@@ -63,6 +63,8 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
   }
 
   public async getSessionRequests(tutorId: string):Promise<any> {
+    console.log(tutorId ,'tutorId');
+    
   return await Notification.find({ recipientId: tutorId })
     .populate("senderId", "name email") // populate student details
     .sort({ createdAt: -1 });
