@@ -10,5 +10,10 @@ export interface IuserRepository {
     findById(userId: string): Promise<Iuser | null>
     findApprovedTutors(): Promise<ITutorProfile[]> 
     findTutorById(tutorId: string) : Promise<ITutorProfile | null>
+    createNotification(
+  tutorId: string,
+  studentId: string,
+  message: string
+): Promise<any>
 
 }

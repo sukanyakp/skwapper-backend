@@ -4,6 +4,7 @@ import { BaseRepository } from "./baseRepository";
 import redisClient from "../../config/redis";
 import tutorApplicationModel, { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
 import TutorProfile, { ITutorProfile } from "../../models/tutor/tutorProfile";
+import Notification from "../../models/notification/notificationModel";
 
 export class UserRepository extends BaseRepository<Iuser> implements IuserRepository {
   constructor() {
@@ -53,6 +54,19 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
   public async findTutorById(tutorId: string) : Promise<ITutorProfile | null> {
     return await TutorProfile.findById(tutorId);
   }
+
+public async createNotification(
+  tutorId: string,
+  studentId: string,
+  message: string
+): Promise<any> {
+  return await Notification.create({
+    recipientId: tutorId,
+    senderId: studentId,
+    message
+  });
+}
+
 
 
 

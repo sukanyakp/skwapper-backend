@@ -108,5 +108,25 @@ public getTutorById = async (req: Request, res: Response): Promise<void> => {
   };
 
 
+public sendSessionRequest = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { tutorId } = req.params;
+    const studentId = req.userId;
+    if(!studentId){
+      res.status(401).json({message :"Unauthorized: student ID not found" })
+      return;
+    }
+
+    const message = await this.service.createSessionRequestNotification(tutorId, studentId);
+    res.status(200).json({ message });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Failed to send request" });
+  }
+};
+
+
+
 
 }

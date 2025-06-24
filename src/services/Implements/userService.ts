@@ -66,6 +66,35 @@ public async getTutorById(tutorId: string): Promise<ITutorProfile> {
   return tutor;
 }
 
+// public async sendVideoSessionRequest(tutorId:string,studentId:string):Promise<string>{
+
+//   if(!tutorId || !studentId){
+//     throw new Error("Tutor ID and Student ID is required");
+//   }
+
+//   const tutor = await this.UserRepository.findTutorById(tutorId)
+//   const student = await this.UserRepository.findById(studentId)
+//   console.log(tutor,student ,'tutor and student');
+  
+//     if (!tutor) {
+//     throw new Error("Tutor not found");
+//   }
+//     if (!student) {
+//     throw new Error("Student not found");
+//   }
+  
+//   return "Request sent successfully";
+
+// }
+
+public async createSessionRequestNotification(
+  tutorId: string,
+  studentId: string
+): Promise<any> {
+  const message = "You have a new session request.";
+  return await this.UserRepository.createNotification(tutorId, studentId, message);
+}
+
 
 
  
