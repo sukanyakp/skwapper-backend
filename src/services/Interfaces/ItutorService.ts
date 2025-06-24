@@ -1,3 +1,4 @@
+import {  ITutorial } from "../../models/tutor/courseModel";
 import { Iuser } from "../../models/user/userModel";
 
 export interface ITutorService {
@@ -9,4 +10,9 @@ export interface ITutorService {
 
   createTutorProfile(profileData: any,file: Express.Multer.File): Promise<any>
   getTutorProfile (userId: string) : Promise<any>
+  createCourse  (
+    data: any,
+    file?: Express.Multer.File,
+    tutorId?: string
+  ): Promise<ITutorial> 
 }

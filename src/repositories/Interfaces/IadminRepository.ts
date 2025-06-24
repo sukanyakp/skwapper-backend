@@ -6,7 +6,8 @@ export interface IAdminRepository {
     findByEmail(email : string) : Promise<Iuser | null>
     findByRole(role : string) : Promise<Iuser[] > 
     findById(id : string) : Promise < Iuser | null > 
-    toggleBlockStatus(userId: string, block: boolean): Promise<Iuser | null>
+    tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null>
+    userBlockStatus(userId : string,block : boolean) : Promise <Iuser | null>
     getAllUsers(): Promise<Iuser[]> 
     
 }

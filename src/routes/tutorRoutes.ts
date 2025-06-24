@@ -42,6 +42,6 @@ router.get(
 
 router.post('/profile',verifyToken,upload.single("image"), tutorControllers.createProfile)
 router.get('/profile',verifyToken ,tutorControllers.getTutorProfile)
-
+router.post('/course',verifyToken,tutorControllers.createCourse)
 
 export default router;

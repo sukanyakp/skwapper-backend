@@ -36,7 +36,12 @@ export class CourseController {
 
     public getAllCourses = async (req: Request, res: Response) => {
   try {
+
+    console.log('getAllCourses');
+    
     const courses = await this.service.fetchAllCourses();
+    console.log(courses , 'courses');
+    
     res.status(200).json(courses);
   } catch (err) {
     console.error("Error fetching courses:", err);

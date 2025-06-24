@@ -3,6 +3,7 @@ import TutorApplication from "../../models/tutor/tutorApplicationModel";
 import { BaseRepository } from "./baseRepository";
 import { Iuser } from "../../models/user/userModel";
 import User from "../../models/user/userModel";
+import courseModel, {  ITutorial } from "../../models/tutor/courseModel";
 
 interface TutorApplicationData {
   title: string;
@@ -46,4 +47,11 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
   public async findByUserId(userId: string): Promise<Iuser | null> {
     return await User.findById(userId); // You probably meant this
   }
+
+
+  public async createCourse  (courseData: Partial<ITutorial>): Promise<ITutorial>  {
+  const newCourse = new courseModel (courseData);
+  return await newCourse.save();
+};
+
 }

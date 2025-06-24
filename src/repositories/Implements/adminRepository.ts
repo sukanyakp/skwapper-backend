@@ -34,12 +34,20 @@ export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRep
     }
 
 
-     public async toggleBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
+     public async tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
     return await tutorApplicationModel.findOneAndUpdate(
-     { user : userId},
+      { user : userId},
       { isBlocked: block },
       { new: true }
     );
+  }
+
+  public async userBlockStatus(userId : string,block : boolean) : Promise <Iuser | null> {
+    return await User.findById(
+      userId,
+      {isBlocked : block},
+      {new : true}
+     )
   }
 
    public async getAllUsers(): Promise<Iuser[]> {

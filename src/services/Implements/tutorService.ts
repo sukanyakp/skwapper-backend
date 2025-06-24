@@ -7,6 +7,8 @@ import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
 import User from '../../models/user/userModel'
 import { uploadToCloudinary } from "../../utils/cloudinaryUpload"; // adjust path
 import TutorProfile from "../../models/tutor/tutorProfile"
+import { ITutorial } from "../../models/tutor/courseModel";
+
 
 export class TutorService implements ITutorService {
   private TutorRepository: ItutorRepository;
@@ -77,6 +79,32 @@ public async createTutorProfile(profileData: any, file: Express.Multer.File): Pr
  async getTutorProfile (userId: string) : Promise<any>  {
   return await TutorProfile.findOne({ userId : userId });
 };
+
+
+async createCourse  (
+  data: any,
+  file?: Express.Multer.File,
+  tutorId?: string
+): Promise<ITutorial> {
+  let thumbnailUrl = "";
+
+  if (file) {
+    const result = (await cloudinary.uploader.upload(file.path)) as UploadApiResponse;
+    thumbnailUrl = result.secure_url;
+  }
+
+  const courseData = {
+    ...data,
+    price: Number(data.price),
+    tutorId,
+    thumbnail: thumbnailUrl,
+  };
+  console.log(courseData ,'courseData at service');
+  
+
+  return await this.TutorRepository.createCourse(courseData);
+};
+
 
 
 

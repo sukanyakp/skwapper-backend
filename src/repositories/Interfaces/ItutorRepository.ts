@@ -1,3 +1,4 @@
+import {  ITutorial } from "../../models/tutor/courseModel";
 import { Iuser } from "../../models/user/userModel";
 
 interface TutorApplicationData {
@@ -10,4 +11,5 @@ interface TutorApplicationData {
 export interface ItutorRepository {
   saveTutorApplication(userId: string, data: TutorApplicationData): Promise<any>;
   findByUserId(userId: string) : Promise<Iuser | null >
+  createCourse  (courseData: Partial<ITutorial>): Promise<ITutorial>  
 }
