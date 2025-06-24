@@ -19,7 +19,7 @@ export class TutorService implements ITutorService {
 public async applyForTutor(
   userId: string,
   files: Express.Multer.File[],
-  formData: { title: string; bio: string; skills: string; experience: string }
+  formData: { category: string; bio: string; skills: string; experience: string }
 ) {
   try {
     // Upload files to Cloudinary
@@ -28,7 +28,7 @@ public async applyForTutor(
 
     // Save tutor application with additional info
     const result = await this.TutorRepository.saveTutorApplication(userId, {
-      title: formData.title,
+      category: formData.category,
       bio: formData.bio,
       skills: formData.skills,
       experience: formData.experience,

@@ -2,6 +2,8 @@ import User, { Iuser } from "../../models/user/userModel";
 import { IuserRepository } from "../Interfaces/IuserRepository";
 import { BaseRepository } from "./baseRepository";
 import redisClient from "../../config/redis";
+import tutorApplicationModel, { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
+import TutorProfile, { ITutorProfile } from "../../models/tutor/tutorProfile";
 
 export class UserRepository extends BaseRepository<Iuser> implements IuserRepository {
   constructor() {
@@ -42,5 +44,16 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
   async findById(userId: string): Promise<Iuser | null> {
   return User.findById(userId);
 }
+
+
+ async findApprovedTutors(): Promise<ITutorProfile[]> {
+    return await TutorProfile.find().sort({ createdAt: -1 }); //{ approved: true }
+  }
+
+  public async findTutorById(tutorId: string) : Promise<ITutorProfile | null> {
+    return await TutorProfile.findById(tutorId);
+  }
+
+
 
 }

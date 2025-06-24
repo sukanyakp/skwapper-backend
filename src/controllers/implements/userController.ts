@@ -70,7 +70,42 @@ public createProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
-  
+
+public getApprovedTutors = async (req: Request, res: Response): Promise<void> => {
+    try {
+      console.log('get approved tutors for users ');
+      
+      
+      
+      const tutors = await this.service.getAllApprovedTutors();
+      
+      res.status(200).json(tutors);
+    } catch (error) {
+      console.error("Error fetching tutors:", error);
+      res.status(500).json({ message: "Failed to fetch tutors" });
+    }
+  };
+
+
+public getTutorById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      console.log('tutorId details');
+      console.log('a');
+      
+      const {tutorId} = req.params;
+      console.log(tutorId,'tutorId details');
+      
+      const tutor = await this.service.getTutorById(tutorId);
+      if (!tutor) {
+        res.status(404).json({ message: "Tutor not found" });
+        return;
+      }
+      res.status(200).json(tutor);
+    } catch (error) {
+      console.error("Error fetching tutor details:", error);
+      res.status(500).json({ message: "Failed to fetch tutor details" });
+    }
+  };
 
 
 

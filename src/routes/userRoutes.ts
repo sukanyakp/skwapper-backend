@@ -29,6 +29,8 @@ userRoutes.post("/reset-password/:token", authControllers.resetPassword);
 
 userRoutes.post('/profile',verifyToken,upload.single("image"), userControllers.createProfile)
 userRoutes.get('/profile',verifyToken ,userControllers.getStudentProfile)
+userRoutes.get('/tutors', userControllers.getApprovedTutors)
+userRoutes.get('/tutor/:tutorId' ,userControllers.getTutorById)
 
 
 export default userRoutes
