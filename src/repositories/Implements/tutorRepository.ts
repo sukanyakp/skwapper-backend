@@ -5,6 +5,7 @@ import { Iuser } from "../../models/user/userModel";
 import User from "../../models/user/userModel";
 import TutorialModel, {  ITutorial } from "../../models/tutor/TutorialModel";
 import Notification from "../../models/notification/notificationModel";
+import Availability, { IAvailability } from "../../models/tutor/tutorAvailability";
 
 interface TutorApplicationData {
   category: string;
@@ -69,6 +70,20 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
     .populate("senderId", "name email") // populate student details
     .sort({ createdAt: -1 });
 }
+
+
+
+ async saveAvailability(tutorId: string, data: any): Promise<IAvailability> {
+    return await Availability.findOneAndUpdate(
+      { tutorId },
+      { availability: data },
+      { upsert: true, new: true }
+    );
+  }
+
+  async getAvailability(tutorId: string): Promise<IAvailability | null> {
+    return await Availability.findOne({ tutorId });
+  }
 
 
 }

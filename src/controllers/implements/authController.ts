@@ -39,7 +39,7 @@ export class AuthController {
     console.log(accessToken ,'accessToken at the backend');
     
 
-    // Role-based logic (optional: enforce only certain roles here)
+    // Role-based logic 
     const allowedRoles = ["student", "tutor", "admin"];
     if (!allowedRoles.includes(user.role)) {
       res.status(403).json({ message: "Access denied: Unauthorized role" });
@@ -63,7 +63,7 @@ export class AuthController {
         _id: user._id,
         email: user.email,
         name: user.name,
-        role: user.role, // 🔥 important for frontend routing
+        role: user.role, //  important for frontend routing
       },
     });
 

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import User ,{ Iuser } from "../../models/user/userModel";
 import { ITutorService } from "../../services/Interfaces/ItutorService";
 import { AuthRequest } from "../../types";
+import scheduledSession from "../../models/notification/scheduledSessionModel";
 
 
 export class TutorController {
@@ -63,7 +64,7 @@ if (!userId) {
 
 public  checkTutorApplicationStatus = async (req: AuthRequest, res: Response) : Promise<any>=> {
   try {
-    const userId = req.userId; // Assuming you use a JWT middleware and attach userId
+    const userId = req.userId; 
 
     console.log('here we are at the bakend of checkTutorApplicationStatus');
     
@@ -122,7 +123,7 @@ public  checkTutorApplicationStatus = async (req: AuthRequest, res: Response) : 
     console.log('at createProfile controller');
 
     const userId = req.userId;
-    const file = req.file as Express.Multer.File; // 🔥 Multer + Cloudinary gives this
+    const file = req.file as Express.Multer.File; // Multer + Cloudinary gives this
 
     console.log(file ,'files');
     
@@ -148,7 +149,7 @@ public  checkTutorApplicationStatus = async (req: AuthRequest, res: Response) : 
 
     console.log('getstudentProfile');
     
-    const userId = req.userId; // assuming JWT middleware adds `user` to req
+    const userId = req.userId; 
     console.log(userId , 'userId');
     
 
@@ -232,6 +233,50 @@ public getMyCourses = async (req: AuthRequest, res: Response) : Promise<void> =>
     res.status(500).json({ message: "Failed to load requests" });
   }
 };
+
+
+
+public  scheduleSession = async(req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { date, time, duration } = req.body;
+    const tutorId = req.userId;
+
+    const session = await scheduledSession.create({ tutorId, date, time, duration });
+    res.status(201).json({ message: "Session scheduled", session });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to schedule session" });
+  }
+}
+
+
+public setAvailability = async (req: AuthRequest, res: Response) : Promise<void> => {
+    try {
+      const tutorId = req.userId;
+      const { availability } = req.body;
+
+      if (!availability) {
+         res.status(400).json({ message: "Availability is required." });
+         return
+      }
+
+      const saved = await this.service.setTutorAvailability(tutorId!, availability);
+      res.status(200).json(saved);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Failed to save availability." });
+    }
+  };
+
+ public getAvailability = async (req: AuthRequest, res: Response) :Promise<void> => {
+    try {
+      const tutorId = req.userId;
+      const availability = await this.service.getTutorAvailability(tutorId!);
+      res.status(200).json(availability);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get availability." });
+    }
+  };
+
 
 
 

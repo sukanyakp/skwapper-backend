@@ -51,7 +51,7 @@ public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise
         
         const { applicationId } = req.params;
         const { action, rejectionReason } = req.body;
-        const adminId = req?.userId; // assuming admin ID is set in req.user via middleware
+        const adminId = req?.userId; 
 
         if (!["approved", "rejected"].includes(action)) {
             res.status(400).json({ message: "Invalid action" });
@@ -86,7 +86,7 @@ public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise
 
     public updateTutorStatus = async (req: Request, res: Response): Promise<void> => {
         try {
-            const { id, action } = req.params; // Extracting tutor ID and action from the request parameters
+            const { id, action } = req.params; 
             console.log(`Updating tutor status for ID: ${id}, Action: ${action}`);
 
             const updatedTutor = await this.service.updateTutorStatus(id, action);

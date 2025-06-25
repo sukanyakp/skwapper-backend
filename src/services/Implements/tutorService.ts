@@ -8,6 +8,7 @@ import User from '../../models/user/userModel'
 import { uploadToCloudinary } from "../../utils/cloudinaryUpload"; // adjust path
 import TutorProfile from "../../models/tutor/tutorProfile"
 import { ITutorial } from "../../models/tutor/TutorialModel";
+import { IAvailability } from "../../models/tutor/tutorAvailability";
 
 
 export class TutorService implements ITutorService {
@@ -132,6 +133,15 @@ async getCoursesByTutor(tutorId: string): Promise<ITutorial[]> {
   public async getSessionRequests(tutorId: string) : Promise<string>{
   return await this.TutorRepository.getSessionRequests(tutorId);
 }
+
+
+ async setTutorAvailability(tutorId: string, availability: any): Promise<IAvailability> {
+    return await this.TutorRepository.saveAvailability(tutorId, availability);
+  }
+
+  async getTutorAvailability(tutorId: string): Promise<IAvailability | null> {
+    return await this.TutorRepository.getAvailability(tutorId);
+  }
 
 
 

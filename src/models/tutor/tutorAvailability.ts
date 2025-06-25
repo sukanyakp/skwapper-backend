@@ -1,34 +1,34 @@
+import mongoose, { Document, Schema } from "mongoose";
 
-
-import mongoose, { Document, Types } from "mongoose";
-
-export interface ITutorAvailability extends Document {
-  tutorId: Types.ObjectId;
-  day: string; // e.g. "Monday"
-  startTime: string; // e.g. "18:00"
-  endTime: string;   // e.g. "20:00"
+export interface IAvailability extends Document {
+  tutorId: mongoose.Types.ObjectId;
+  availability: {
+    [key: string]: {
+      start: string;
+      end: string;
+    };
+  };
 }
 
-const availabilitySchema = new mongoose.Schema({
+const availabilitySchema = new mongoose.Schema<IAvailability>({
   tutorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "TutorProfile",
+    ref: "User",
     required: true,
+    unique: true,
   },
-  day: {
-    type: String,
-    required: true,
+  availability: {
+    type: Map,
+    of: {
+      start: { type: String },
+      end: { type: String },
+    },
+    default: {},
   },
-  startTime: {
-    type: String,
-    required: true,
-  },
-  endTime: {
-    type: String,
-    required: true,
-  }
+}, {
+  timestamps: true
 });
 
-const TutorAvailability = mongoose.model("TutorAvailability", availabilitySchema);
+const Availability = mongoose.model<IAvailability>("Availability", availabilitySchema);
 
-export default TutorAvailability;
+export default Availability;

@@ -15,7 +15,7 @@ public createProfile = async (req: AuthRequest, res: Response) => {
     console.log('at createProfile controller');
 
     const userId = req.userId;
-    const file = req.file as Express.Multer.File; // 🔥 Multer + Cloudinary gives this
+    const file = req.file as Express.Multer.File; //  Multer + Cloudinary gives this
 
     console.log(file ,'files');
     
@@ -46,7 +46,7 @@ public createProfile = async (req: AuthRequest, res: Response) => {
 
     console.log('getstudentProfile');
     
-    const userId = req.userId; // assuming JWT middleware adds `user` to req
+    const userId = req.userId; 
     console.log(userId , 'userId');
     
 

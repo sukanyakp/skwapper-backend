@@ -1,3 +1,4 @@
+import { IAvailability } from "../../models/tutor/tutorAvailability";
 import {  ITutorial } from "../../models/tutor/TutorialModel";
 import { Iuser } from "../../models/user/userModel";
 
@@ -18,4 +19,7 @@ export interface ITutorService {
 
   getCoursesByTutor(tutorId: string) : Promise<ITutorial[]>
   getSessionRequests(tutorId: string) : Promise<string>
+
+  setTutorAvailability(tutorId: string, availability: any): Promise<IAvailability>
+  getTutorAvailability(tutorId: string): Promise<IAvailability | null>
 }
