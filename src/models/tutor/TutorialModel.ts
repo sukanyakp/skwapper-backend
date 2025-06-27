@@ -6,10 +6,14 @@ export interface ITutorial extends Document {
   description: string;
   price: number;
   language: string;
-  songName: string;
-  movieOrAlbum: string;
+  level: "basic" | "intermediate" | "advanced";
+  songName?: string;
+  movieOrAlbum?: string;
   thumbnail: string;
   tutorId: mongoose.Types.ObjectId;
+  basicContent?: string;
+  intermediateContent?: string;
+  advancedContent?: string;
 }
 
 const tutorialSchema = new Schema<ITutorial>(
@@ -18,11 +22,27 @@ const tutorialSchema = new Schema<ITutorial>(
     category: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    language: { type: String },
+    language: { type: String, required: true },
+
+    level: {
+      type: String,
+      enum: ["basic", "intermediate", "advanced"],
+      required: true,
+    },
+
     songName: { type: String },
     movieOrAlbum: { type: String },
     thumbnail: { type: String },
-    tutorId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+
+    tutorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    basicContent: { type: String },
+    intermediateContent: { type: String },
+    advancedContent: { type: String },
   },
   { timestamps: true }
 );

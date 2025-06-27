@@ -1,13 +1,18 @@
 import { Iuser } from "../../models/user/userModel";
+import { IBaseRepository } from "./IbaseRepository";
 
+export interface IAdminRepository extends IBaseRepository<Iuser> {
+  getAllUsers(): Promise<Iuser[]>
 
-export interface IAdminRepository {
-    createAdmin(adminData: Iuser): Promise<Iuser>
-    findByEmail(email : string) : Promise<Iuser | null>
-    findByRole(role : string) : Promise<Iuser[] > 
-    findById(id : string) : Promise < Iuser | null > 
-    tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null>
-    userBlockStatus(userId : string,block : boolean) : Promise <Iuser | null>
-    getAllUsers(): Promise<Iuser[]> 
-    
+  tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null>;
+  userBlockStatus(userId: string, block: boolean): Promise<Iuser | null>;
+
+  getAllTutorApplications(): Promise<any[]>;
+  getTutorApplicationById(applicationId: string): Promise<any | null>;
+
+  updateTutorApplicationStatus(
+    applicationId: string,
+    action: "approved" | "rejected",
+    role: string
+  ): Promise<any>;
 }
