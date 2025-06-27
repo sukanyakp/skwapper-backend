@@ -15,8 +15,8 @@ public async createCourse  (data: CourseData) : Promise<any> {
   return await this.CourseRepository.saveCourse(data);
 };
 
-  public async fetchAllCourses(): Promise<any> {
-    return await this.CourseRepository.getAllCourses();
+   public async fetchAllCourses(page: number, limit: number): Promise<any> {
+    return await this.CourseRepository.getPaginatedCourses(page, limit);
   }
 
 }

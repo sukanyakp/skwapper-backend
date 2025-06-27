@@ -12,7 +12,10 @@ export class AdminController {
   //  Get all tutor applications
   public getTutorApplications = async (req: Request, res: Response): Promise<void> => {
     try {
-      const applications = await this.service.getTutorApplications();
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+      const applications = await this.service.getTutorApplications(page,limit);
       res.status(200).json(applications);
     } catch (error) {
       console.error("Error fetching tutor applications:", error);
@@ -96,8 +99,11 @@ export class AdminController {
   //  Get all users
   public getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
-      const users = await this.service.getAllUsers();
-      res.status(200).json(users);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+
+      const { users, totalPages } = await this.service.getAllUsers(page, limit);
+      res.status(200).json({ users, totalPages });
     } catch (err) {
       console.error("Error fetching users:", err);
       res.status(500).json({ message: "Server error while fetching users" });

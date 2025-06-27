@@ -13,13 +13,18 @@ export class AdminService implements IAdminService {
     return this.UserRepository.findByRole("tutor");
   }
 
-  public async getAllUsers(): Promise<Iuser[]> {
-    return this.UserRepository.getAllUsers();
+  public async getAllUsers(page: number, limit: number): Promise<{ users: Iuser[]; totalPages: number }> {
+    const skip = (page - 1) * limit;
+    const users = await this.UserRepository.getUsersPaginated(skip, limit);
+    const total = await this.UserRepository.getUserCount();
+    const totalPages = Math.ceil(total / limit);
+    return { users, totalPages };
   }
 
-  public async getTutorApplications(): Promise<any[]> {
-    return this.UserRepository.getAllTutorApplications();
-  }
+ 
+public async getTutorApplications  (page: number, limit: number): Promise<any> {
+  return await this.UserRepository.fetchTutorApplications(page, limit);
+};
 
   public async getTutorApplicationById(applicationId: string): Promise<any | null> {
     return this.UserRepository.getTutorApplicationById(applicationId);
