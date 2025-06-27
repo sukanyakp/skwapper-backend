@@ -7,8 +7,10 @@ export interface IAdminRepository extends IBaseRepository<Iuser> {
   tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null>;
   userBlockStatus(userId: string, block: boolean): Promise<Iuser | null>;
 
-  getAllTutorApplications(): Promise<any[]>;
+  fetchTutorApplications (page: number, limit: number) : Promise<any> 
   getTutorApplicationById(applicationId: string): Promise<any | null>;
+  getUsersPaginated(skip: number, limit: number): Promise<Iuser[]>
+  getUserCount(): Promise<number>
 
   updateTutorApplicationStatus(
     applicationId: string,

@@ -113,7 +113,7 @@ async verifyOtp(email: string, otp: string): Promise<Iuser> {
 
   const userToCreate: Iuser = parsedValue;
 
-  const savedUser = await this.userRepository.createUser(userToCreate);
+  const savedUser = await this.userRepository.create(userToCreate);
 
   await redisClient.del(key);
   return savedUser;

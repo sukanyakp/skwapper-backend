@@ -16,7 +16,19 @@ export class CourseRepository extends BaseRepository<Iuser> implements IcourseRe
   return await newCourse.save();
   };
 
-   public async getAllCourses(): Promise<any> {
-    return await CourseModel.find();
+    public async getPaginatedCourses(page: number, limit: number) : Promise<any>{
+    const skip = (page - 1) * limit;
+
+    const [courses, totalCount] = await Promise.all([
+      CourseModel.find().skip(skip).limit(limit).lean(),
+      CourseModel.countDocuments()
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      courses,
+      totalPages
+    };
   }
 }

@@ -11,7 +11,7 @@ import { verifyToken } from "../middlewares/authMiddleware";   // ✅ Auth middl
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-const tutorRepositoryInstance = new TutorRepository(User);
+const tutorRepositoryInstance = new TutorRepository();
 const tutorService = new TutorService(tutorRepositoryInstance);
 const tutorControllers = new TutorController(tutorService);
 

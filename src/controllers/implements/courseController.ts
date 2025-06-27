@@ -34,20 +34,19 @@ export class CourseController {
       }
     };
 
-    public getAllCourses = async (req: Request, res: Response) => {
-  try {
+ public getAllCourses = async (req: Request, res: Response) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
 
-    console.log('getAllCourses');
-    
-    const courses = await this.service.fetchAllCourses();
-    console.log(courses , 'courses');
-    
-    res.status(200).json(courses);
-  } catch (err) {
-    console.error("Error fetching courses:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+      const result = await this.service.fetchAllCourses(page, limit);
+
+      res.status(200).json(result); // contains: { courses, totalPages }
+    } catch (err) {
+      console.error("Error fetching courses:", err);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
     
 
 

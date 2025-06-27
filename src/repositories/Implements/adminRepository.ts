@@ -29,9 +29,24 @@ export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepo
     return await User.find({}, "-password");
   }
 
-  async getAllTutorApplications(): Promise<any[]> {
-    return await TutorApplicationModel.find().populate("user", "name email");
-  }
+  async fetchTutorApplications (page: number, limit: number) : Promise<any> {
+  const skip = (page - 1) * limit;
+
+  const [applications, total] = await Promise.all([
+    TutorApplicationModel.find()
+      .populate("user", "name email isBlocked") // Adjust as needed
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    TutorApplicationModel.countDocuments(),
+  ]);
+
+  return {
+    applications,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+  };
+};
 
   async getTutorApplicationById(applicationId: string): Promise<any | null> {
     return await TutorApplicationModel.findById(applicationId).populate("user", "name email");
@@ -62,5 +77,14 @@ export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepo
     });
 
     return application;
+  }
+
+
+   public async getUsersPaginated(skip: number, limit: number): Promise<Iuser[]> {
+    return await User.find().skip(skip).limit(limit);
+  }
+
+  public async getUserCount(): Promise<number> {
+    return await User.countDocuments();
   }
 }
