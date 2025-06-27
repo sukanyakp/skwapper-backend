@@ -1,18 +1,18 @@
 import { Iuser } from "../../models/user/userModel";
 
 export interface IAdminService {
+  getTutors(): Promise<Iuser[]>;
 
-    getTutorApplications(): Promise<any[]>;
-    reviewTutorApplication(
+  getAllUsers(): Promise<Iuser[]>;
+
+  getTutorApplications(): Promise<any[]>;
+
+  getTutorApplicationById(applicationId: string): Promise<any | null>;
+
+  reviewTutorApplication(
     applicationId: string,
-    action: "approved" | "rejected",
-    // adminId: string,
-    rejectionReason?: string
-  ): Promise<any>
-    getTutors(): Promise<Iuser[]>
-    updateTutorStatus(id: string, action: string): Promise<Iuser | null> 
-    getTutorApplicationById(applicationId: string): Promise<any | null>
-    toggleBlockUser(userId: string, block: boolean) : Promise<any | null>
-    getAllUsers(): Promise<Iuser[]>
- 
+    action: "approved" | "rejected"
+  ): Promise<any>;
+
+  toggleBlockUser(userId: string, block: boolean): Promise<Iuser | null>;
 }

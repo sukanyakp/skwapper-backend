@@ -1,5 +1,6 @@
 import { IAvailability } from "../../models/tutor/tutorAvailability";
 import {  ITutorial } from "../../models/tutor/TutorialModel";
+import { ITutorProfile } from "../../models/tutor/tutorProfile";
 import { Iuser } from "../../models/user/userModel";
 
 export interface ITutorService {
@@ -22,4 +23,6 @@ export interface ITutorService {
 
   setTutorAvailability(tutorId: string, availability: any): Promise<IAvailability>
   getTutorAvailability(tutorId: string): Promise<IAvailability | null>
+
+  updateProfile(userId: string, profileData: any, file?: Express.Multer.File) : Promise<ITutorProfile | null>
 }

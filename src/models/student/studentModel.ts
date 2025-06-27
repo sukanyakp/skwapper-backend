@@ -20,15 +20,10 @@ const studentProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  experience: {
-    type: Number,
-    default: 0,
-  },
   location: {
     type: String,
     default: "",
   },
-
   profileImage : {
     type : String,
     default : ""

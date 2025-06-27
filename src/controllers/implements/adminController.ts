@@ -3,137 +3,98 @@ import { IAdminService } from "../../services/Interfaces/IadminService";
 import { AuthRequest } from "../../types";
 
 export class AdminController {
-    private service: IAdminService;
+  private service: IAdminService;
 
-    constructor(service: IAdminService) {
-        this.service = service;
-    }
-
-    public getTutorApplications = async (req: Request, res: Response): Promise<void> => {
-    try {
-      console.log('here we are at getTUTorapplications');
-      
-        const applications = await this.service.getTutorApplications();
-        res.status(200).json(applications);
-    } catch (error) {
-        console.error("Error fetching tutor applications:", error);
-        res.status(500).json({ message: "Server error while fetching applications" });
-    }
-};
-
-
-public  getTutorApplicationById = async (req: Request, res: Response) : Promise<void> => {
-
-    console.log('here we are at the getTutorApplication by id ::');
-    
-  const { applicationId } = req.params;
-
-  try {
-    const application = await this.service.getTutorApplicationById(applicationId);
-    console.log(application , 'user to tutor details .. ');
-    
-
-    if (!application) {
-       res.status(404).json({ message: "Application not found" });
-       return
-    }
-
-    res.status(200).json(application);
-  } catch (error) {
-    console.error("Error fetching tutor application:", error);
-    res.status(500).json({ message: "Server error" });
+  constructor(service: IAdminService) {
+    this.service = service;
   }
-}
 
-public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise<void> => {
+  //  Get all tutor applications
+  public getTutorApplications = async (req: Request, res: Response): Promise<void> => {
     try {
-        console.log('here we are reviewApplication .. ..');
-        
-        const { applicationId } = req.params;
-        const { action, rejectionReason } = req.body;
-        const adminId = req?.userId; 
-
-        if (!["approved", "rejected"].includes(action)) {
-            res.status(400).json({ message: "Invalid action" });
-            return;
-        }
-
-        const result = await this.service.reviewTutorApplication(applicationId, action, rejectionReason);
-
-        if (!result) {
-            res.status(404).json({ message: "Application not found or update failed" });
-            return;
-        }
-
-        res.status(200).json({ message: `Tutor ${action}d successfully`, result });
+      const applications = await this.service.getTutorApplications();
+      res.status(200).json(applications);
     } catch (error) {
-        console.error("Error reviewing tutor application:", error);
-        res.status(500).json({ message: "Server error during review" });
+      console.error("Error fetching tutor applications:", error);
+      res.status(500).json({ message: "Server error while fetching applications" });
     }
-};
+  };
 
-    public getTutors = async (req: Request, res: Response): Promise<void> => {
-        try {
-            console.log("Fetching tutors...");
+  //  Get a single tutor application by ID
+  public getTutorApplicationById = async (req: Request, res: Response): Promise<void> => {
+    const { applicationId } = req.params;
 
-            const tutors = await this.service.getTutors();
-            res.status(200).json(tutors);
-        } catch (error) {
-            console.error("Error fetching tutors:", error);
-            res.status(500).json({ message: "Server error while fetching tutors" });
-        }
-    };
+    try {
+      const application = await this.service.getTutorApplicationById(applicationId);
 
-    public updateTutorStatus = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const { id, action } = req.params; 
-            console.log(`Updating tutor status for ID: ${id}, Action: ${action}`);
+      if (!application) {
+        res.status(404).json({ message: "Application not found" });
+        return;
+      }
 
-            const updatedTutor = await this.service.updateTutorStatus(id, action);
+      res.status(200).json(application);
+    } catch (error) {
+      console.error("Error fetching tutor application:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 
-            if (!updatedTutor) {
-                res.status(400).json({ message: "Invalid tutor ID or action" });
-                return;
-            }
+  //  Review a tutor application
+  public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const { applicationId } = req.params;
+      const { action, rejectionReason } = req.body;
 
-            res.status(200).json({ message: "Tutor status updated successfully", tutor: updatedTutor });
-        } catch (error) {
-            console.error("Error updating tutor status:", error);
-            res.status(500).json({ message: "Server error while updating tutor status" });
-        }
-    };
+      if (!["approved", "rejected"].includes(action)) {
+        res.status(400).json({ message: "Invalid action" });
+        return;
+      }
 
+      const result = await this.service.reviewTutorApplication(applicationId, action, ); //rejectionReason
 
+      if (!result) {
+        res.status(404).json({ message: "Application not found or update failed" });
+        return;
+      }
 
- public toggleBlockUser = async (req: Request, res: Response) : Promise <void>=> {
-  const { userId } = req.params;
-  
-  const { block } = req.body;
-  console.log(userId ,'here we are at blockUser');
-  
+      res.status(200).json({ message: `Tutor ${action}d successfully`, result });
+    } catch (error) {
+      console.error("Error reviewing tutor application:", error);
+      res.status(500).json({ message: "Server error during review" });
+    }
+  };
 
-  try {
-    const user = await this.service.toggleBlockUser(userId, block);
-    console.log(user , 'user at toggleBlockUser');
-    
+  //  Get all tutors
+  public getTutors = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const tutors = await this.service.getTutors();
+      res.status(200).json(tutors);
+    } catch (error) {
+      console.error("Error fetching tutors:", error);
+      res.status(500).json({ message: "Server error while fetching tutors" });
+    }
+  };
 
-    res.status(200).json({
-      message: `User ${block ? "blocked" : "unblocked"} successfully`,
-      user,
-    });
+  //  Toggle block/unblock user
+  public toggleBlockUser = async (req: Request, res: Response): Promise<void> => {
+    const { userId } = req.params;
+    const { block } = req.body;
 
-    console.log('everything is ok?');
-    
-  } catch (error: any) {
-    const status = error.message === "User not found" ? 404 : 500;
-    res.status(status).json({ message: error.message || "Internal Server Error" });
-  }
-};
+    try {
+      const user = await this.service.toggleBlockUser(userId, block);
 
+      res.status(200).json({
+        message: `User ${block ? "blocked" : "unblocked"} successfully`,
+        user,
+      });
+    } catch (error: any) {
+      const status = error.message === "User not found" ? 404 : 500;
+      res.status(status).json({ message: error.message || "Internal Server Error" });
+    }
+  };
 
-
-
-  public getAllUsers = async (req: Request, res: Response) => {
+  //  Get all users
+  public getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
       const users = await this.service.getAllUsers();
       res.status(200).json(users);
@@ -142,9 +103,4 @@ public reviewTutorApplication = async (req: AuthRequest, res: Response): Promise
       res.status(500).json({ message: "Server error while fetching users" });
     }
   };
-
-
-
-
-
 }

@@ -1,103 +1,60 @@
-import { UserRepository } from "../../repositories/Implements/userRepository";
 import { IuserRepository } from "../../repositories/Interfaces/IuserRepository";
-import { Iuser } from "../../models/user/userModel";
 import { IuserService } from "../Interfaces/IuserService";
-import redisClient from "../../config/redis";
-import { generateOTP } from "../../utils/otp.util";
-import { sendOtpEmail } from "../../utils/email.util";
+import { ITutorProfile } from "../../models/tutor/tutorProfile";
 import StudentProfile from "../../models/student/studentModel";
 import cloudinary from "../../utils/cloudinaryConfig";
-import { ITutorProfile } from "../../models/tutor/tutorProfile";
-
+import User from "../../models/user/userModel";
 
 export class UserService implements IuserService {
-      private UserRepository: IuserRepository;
+  private UserRepository: IuserRepository;
 
-      constructor(UserRepository: IuserRepository) {
-        this.UserRepository = UserRepository;
-      }
-public async createStudentProfile(profileData: any, file: Express.Multer.File): Promise<any> {
-  console.log('Creating profile for the student');
-
-  const existing = await StudentProfile.findOne({ userId: profileData.userId });
-  if (existing) {
-    throw new Error("Profile already exists");
+  constructor(UserRepository: IuserRepository) {
+    this.UserRepository = UserRepository;
   }
 
-  const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
-  const uploadResult = await cloudinary.uploader.upload(fileStr, { folder: "profile_pictures" });
-  console.log(fileStr ,'fileStr at userSservie');
-  console.log(uploadResult , 'uploadResult at userService');
-  
-  
+  public async createStudentProfile(profileData: any, file: Express.Multer.File): Promise<any> {
+    const existing = await StudentProfile.findOne({ userId: profileData.userId });
+    if (existing) throw new Error("Profile already exists");
 
-  const profileDataWithImage = {
-    ...profileData,
-    profileImage: uploadResult.secure_url, // 👈 update according to your schema
-  };
-  console.log(profileDataWithImage , 'profileDataWIthImage');
-  
+    const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+    const uploadResult = await cloudinary.uploader.upload(fileStr, { folder: "profile_pictures" });
 
-  return await StudentProfile.create(profileDataWithImage);
-}
+    const profileDataWithImage = {
+      ...profileData,
+      profileImage: uploadResult.secure_url,
+    };
 
+    return await StudentProfile.create(profileDataWithImage); // or via repo
+  }
 
+  public async getStudentProfile(userId: string): Promise<any | null> {
+    return await StudentProfile.findOne({ userId });
+  }
 
- async getStudentProfile (userId: string) : Promise<any>  {
-  return await StudentProfile.findOne({ userId : userId });
-};
-
-
-async getAllApprovedTutors(): Promise<ITutorProfile[]> {
+  public async getAllApprovedTutors(): Promise<ITutorProfile[]> {
     return await this.UserRepository.findApprovedTutors();
-   
   }
 
-public async getTutorById(tutorId: string): Promise<ITutorProfile> {
-  if (!tutorId) {
-    throw new Error("Tutor ID is required");
+  public async getTutorById(tutorId: string): Promise<ITutorProfile> {
+    const tutor = await this.UserRepository.findTutorById(tutorId);
+    if (!tutor) throw new Error("Tutor not found");
+    return tutor;
   }
 
-  const tutor = await this.UserRepository.findTutorById(tutorId);
-  if (!tutor) {
-    throw new Error("Tutor not found");
+  // public async sendVideoSessionRequest(tutorId: string, studentId: string): Promise<string> {
+  //   const tutor = await this.UserRepository.findTutorById(tutorId);
+  //   const student = await this.UserRepository.findById(studentId);
+
+  //   if (!tutor) throw new Error("Tutor not found");
+  //   if (!student) throw new Error("Student not found");
+
+  //   await this.UserRepository.createNotification(tutorId, studentId, "New session request");
+
+  //   return "Request sent successfully";
+  // }
+
+  public async createSessionRequestNotification(tutorId: string, studentId: string): Promise<any> {
+    const message = "You have a new session request.";
+    return await this.UserRepository.createNotification(tutorId, studentId, message);
   }
-
-  return tutor;
 }
-
-// public async sendVideoSessionRequest(tutorId:string,studentId:string):Promise<string>{
-
-//   if(!tutorId || !studentId){
-//     throw new Error("Tutor ID and Student ID is required");
-//   }
-
-//   const tutor = await this.UserRepository.findTutorById(tutorId)
-//   const student = await this.UserRepository.findById(studentId)
-//   console.log(tutor,student ,'tutor and student');
-  
-//     if (!tutor) {
-//     throw new Error("Tutor not found");
-//   }
-//     if (!student) {
-//     throw new Error("Student not found");
-//   }
-  
-//   return "Request sent successfully";
-
-// }
-
-public async createSessionRequestNotification(
-  tutorId: string,
-  studentId: string
-): Promise<any> {
-  const message = "You have a new session request.";
-  return await this.UserRepository.createNotification(tutorId, studentId, message);
-}
-
-
-
- 
-}
-
-

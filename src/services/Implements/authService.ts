@@ -74,7 +74,6 @@ async register(user: Iuser): Promise<string> {
     const accessToken = generateAccessToken({ id: user._id, email: user.email ,role: user.role});
     const refreshToken = generateRefreshToken({ id: user._id });
     
-console.log('c');
 
     // console.log( accessToken,'accessTokend ');
     // console.log( refreshToken,'accessTokend ');

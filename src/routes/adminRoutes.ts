@@ -20,12 +20,12 @@ adminRoutes.get(
   adminController.getTutors
 );
 
-adminRoutes.patch(
-  '/tutors/:id/:action',
-  verifyToken,
-  // adminAuthMiddleware,
-  adminController.updateTutorStatus
-);
+// adminRoutes.patch(
+//   '/tutors/:id/:action',
+//   verifyToken,
+//   // adminAuthMiddleware,
+//   adminController.
+// );
 
 adminRoutes.get(
   '/tutor-applications',

@@ -1,62 +1,66 @@
-
-import CourseModel from "../../models/admin/courseModel";
-import tutorApplicationModel from "../../models/tutor/tutorApplicationModel";
-import User, { Iuser } from "../../models/user/userModel";
-import { IAdminRepository } from "../Interfaces/IadminRepository";
 import { BaseRepository } from "./baseRepository";
+import { IAdminRepository } from "../Interfaces/IadminRepository";
+import User, { Iuser } from "../../models/user/userModel";
+import TutorApplicationModel from "../../models/tutor/tutorApplicationModel";
+import type {Role} from "../../types/role.types"
 
+export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepository {
+  constructor() {
+    super(User);
+  }
 
-export class AdminRepository extends BaseRepository<Iuser>  implements IAdminRepository {
-    constructor(){
-        super(User)
-    }
-
-    async findByEmail(email: string): Promise<Iuser | null> {
-        return User.findOne({ email });
-      }
-
-
-    async createAdmin(adminData: Iuser): Promise<Iuser> {
-        try {
-          return await this.create(adminData);
-        } catch (error) {
-          console.error("Error creating user", error);
-          throw new Error("Error creating user");
-        }
-     }
-
-     async findByRole(role : string) : Promise < Iuser[] > {
-      return User.find({ role });
-     }
-
-    async findById(id: string): Promise<Iuser | null> {
-          return await User.findById(id);
-    }
-
-
-     public async tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
-    return await tutorApplicationModel.findOneAndUpdate(
-      { user : userId},
+  async tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
+    return await TutorApplicationModel.findOneAndUpdate(
+      { user: userId },
       { isBlocked: block },
       { new: true }
     );
   }
 
-  public async userBlockStatus(userId : string,block : boolean) : Promise <Iuser | null> {
-    return await User.findById(
+  async userBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
+    return await User.findByIdAndUpdate(
       userId,
-      {isBlocked : block},
-      {new : true}
-     )
+      { isBlocked: block },
+      { new: true }
+    );
   }
 
-   public async getAllUsers(): Promise<Iuser[]> {
-    return await User.find({}, "-password"); // exclude password field
+  async getAllUsers(): Promise<Iuser[]> {
+    return await User.find({}, "-password");
   }
 
+  async getAllTutorApplications(): Promise<any[]> {
+    return await TutorApplicationModel.find().populate("user", "name email");
+  }
 
+  async getTutorApplicationById(applicationId: string): Promise<any | null> {
+    return await TutorApplicationModel.findById(applicationId).populate("user", "name email");
+  }
 
+  async updateTutorApplicationStatus(
+    applicationId: string,
+    action: "approved" | "rejected",
+    role: Role
+  ): Promise<any> {
+    const application = await TutorApplicationModel.findById(applicationId);
+    if (!application) return null;
 
+    const userId = application.user;
+    const user = await User.findById(userId);
+
+    if (!user) throw new Error("User not found");
+
+    user.role = role;
+    await user.save();
+
+    application.status = action;
+    await application.save();
+
+    await User.findByIdAndUpdate(userId, {
+      status: action,
+      isApproved: action === "approved"
+    });
+
+    return application;
+  }
 }
-
-export default AdminRepository

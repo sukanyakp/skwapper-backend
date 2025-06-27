@@ -3,6 +3,7 @@ import User ,{ Iuser } from "../../models/user/userModel";
 import { ITutorService } from "../../services/Interfaces/ItutorService";
 import { AuthRequest } from "../../types";
 import scheduledSession from "../../models/notification/scheduledSessionModel";
+import Availability from "../../models/tutor/tutorAvailability";
 
 
 export class TutorController {
@@ -174,6 +175,26 @@ public  checkTutorApplicationStatus = async (req: AuthRequest, res: Response) : 
 };
 
 
+public editTutorProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    console.log('editTutorProfil');
+    
+    const userId = req?.userId;
+    if(!userId){
+      res.status(500).json({message : 'user ID not found'})
+      return;
+    }
+    const profile = await this.service.updateProfile(userId, req.body, req.file);
+
+    res.status(200).json(profile);
+  } catch (error) {
+    console.error("Error editing profile:", error);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+
+
 public createCourse = async (req: AuthRequest, res: Response) => {
   try {
     console.log('tutor createCrs');
@@ -269,6 +290,8 @@ public setAvailability = async (req: AuthRequest, res: Response) : Promise<void>
 
  public getAvailability = async (req: AuthRequest, res: Response) :Promise<void> => {
     try {
+      console.log('getAvailability');
+      
       const tutorId = req.userId;
       const availability = await this.service.getTutorAvailability(tutorId!);
       res.status(200).json(availability);
@@ -276,6 +299,27 @@ public setAvailability = async (req: AuthRequest, res: Response) : Promise<void>
       res.status(500).json({ message: "Failed to get availability." });
     }
   };
+
+
+
+  public async updateAvailability(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const tutorId = req.userId;
+    const { availability } = req.body;
+
+    const updated = await Availability.findOneAndUpdate(
+      { tutorId },
+      { availability },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({ message: "Availability updated", updated });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ message: "Failed to update availability" });
+  }
+}
+
 
 
 
