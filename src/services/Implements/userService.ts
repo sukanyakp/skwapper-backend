@@ -57,4 +57,9 @@ export class UserService implements IuserService {
     const message = "You have a new session request.";
     return await this.UserRepository.createNotification(tutorId, studentId, message);
   }
+
+
+   public async getRecommendedCourses(category: string): Promise<any> {
+    return this.UserRepository.getCoursesByCategory(category);
+  }
 }

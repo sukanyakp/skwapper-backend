@@ -33,6 +33,10 @@ userRoutes.get('/tutors', userControllers.getApprovedTutors)
 userRoutes.get('/tutor/:tutorId' ,userControllers.getTutorById)
 userRoutes.post('/tutor/request/:tutorId', verifyToken, userControllers.sendSessionRequest);
 
+userRoutes.get('/recommended-courses' ,userControllers.getRecommendedCourses)
+
+// userRoutes.get('/session-requests' , userControllers.getSessionRequests)
+
 
 
 export default userRoutes

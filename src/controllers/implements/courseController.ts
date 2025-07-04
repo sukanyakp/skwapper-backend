@@ -49,5 +49,30 @@ export class CourseController {
   };
     
 
+ public getCourseById = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+
+      // if (!mongoose.Types.ObjectId.isValid(id)) {
+      //   res.status(400).json({ message: "Invalid course ID" });
+      //   return;
+      // }
+
+      const course = await this.service.getCourseById(id);
+
+      console.log(course , 'courses');
+      
+
+      if (!course) {
+        res.status(404).json({ message: "Course not found" });
+        return;
+      }
+
+      res.status(200).json(course);
+    } catch (err) {
+      console.error("Error fetching course:", err);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
 
 }

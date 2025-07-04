@@ -1,3 +1,4 @@
+import { ITutorial } from "../../models/tutor/TutorialModel";
 import { IcourseRepository } from "../../repositories/Interfaces/IcourseRepository";
 import { CourseData } from "../../types/course.types";
 import { IcourseService } from "../Interfaces/IcourseService";
@@ -17,6 +18,11 @@ public async createCourse  (data: CourseData) : Promise<any> {
 
    public async fetchAllCourses(page: number, limit: number): Promise<any> {
     return await this.CourseRepository.getPaginatedCourses(page, limit);
+  }
+
+
+   public async getCourseById(courseId: string): Promise<ITutorial | null> {
+    return await this.CourseRepository.getCourseById(courseId);
   }
 
 }

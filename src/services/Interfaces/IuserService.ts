@@ -10,4 +10,6 @@ export interface IuserService {
   tutorId: string,
   studentId: string
   ): Promise<any>
+
+  getRecommendedCourses(userId: string): Promise<any> 
 }

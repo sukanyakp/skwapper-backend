@@ -1,6 +1,19 @@
 // models/studentProfile.model.ts
 import mongoose from "mongoose";
 
+import { Document, Types } from "mongoose";
+
+export interface IStudentProfile extends Document {
+  userId: Types.ObjectId;
+  name: string;
+  bio?: string;
+  instrument: string;
+  location?: string;
+  profileImage?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 const studentProfileSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,

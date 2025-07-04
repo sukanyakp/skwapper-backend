@@ -1,4 +1,5 @@
 import CourseModel from "../../models/admin/courseModel";
+import TutorialModel, { ITutorial } from "../../models/tutor/TutorialModel";
 import User, { Iuser } from "../../models/user/userModel";
 import { CourseData } from "../../types/course.types";
 import { IcourseRepository } from "../Interfaces/IcourseRepository";
@@ -30,5 +31,10 @@ export class CourseRepository extends BaseRepository<Iuser> implements IcourseRe
       courses,
       totalPages
     };
+  }
+
+
+   public async getCourseById(courseId: string): Promise<ITutorial | null> {
+    return await TutorialModel.findById(courseId);
   }
 }

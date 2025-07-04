@@ -46,6 +46,7 @@ const tutorProfileSchema = new mongoose.Schema({
   hourlyRate: {
     type: Number,
     default: 0,
+    required: true,
   },
   availability: {
     type: String, // or even a custom object with days/times

@@ -4,6 +4,8 @@ import { BaseRepository } from "./baseRepository";
 import redisClient from "../../config/redis";
 import TutorProfile, { ITutorProfile } from "../../models/tutor/tutorProfile";
 import Notification from "../../models/notification/notificationModel";
+import TutorialModel, { ITutorial } from "../../models/tutor/TutorialModel";
+import StudentProfile, { IStudentProfile } from "../../models/student/studentModel";
 
 export class UserRepository extends BaseRepository<Iuser> implements IuserRepository {
   constructor() {
@@ -48,5 +50,13 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
       senderId: studentId,
       message,
     });
+  }
+
+
+
+   public async getCoursesByCategory(category: string): Promise<ITutorial[] | null> {
+    console.log('getcourseCategory at userRepository ; ; ' ,category);
+    
+    return await TutorialModel.find({ category });
   }
 }
