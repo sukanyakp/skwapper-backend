@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import ScheduledSession from "../models/notification/scheduledSessionModel";
 import Notification from "../models/notification/notificationModel";
+import Payments from "../models/student/paymentModel";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -34,8 +35,15 @@ export class WebhookController {
     if (event.type === "checkout.session.completed") {
       const session = event.data.object as Stripe.Checkout.Session;
 
+      console.log(session , 'the whole data from the stripe session');
+      
+
       const tutorId = session.metadata?.tutorId;
       const studentId = session.metadata?.studentId;
+      const amount = session.metadata?.amount
+
+      console.log(amount  , tutorId);
+      
 
       if (!tutorId || !studentId) {
         console.warn("Missing metadata: tutorId or studentId");
@@ -49,8 +57,6 @@ export class WebhookController {
           tutorId,
           studentId,
           status: "pending",
-          date: "",   // Optional — you can update this after confirmation
-          time: "",   // Optional — or add logic to auto-schedule
           duration: 60,
         });
 
@@ -60,6 +66,13 @@ export class WebhookController {
           senderId: studentId,
           message: "You have a new video session request!",
         });
+
+        // Create PaymentModel
+        await Payments.create({
+           tutorId,
+           studentId,
+           amount 
+        })
 
         console.log("Created session + notification.");
       } catch (err) {

@@ -35,7 +35,7 @@ userRoutes.post('/tutor/request/:tutorId', verifyToken, userControllers.sendSess
 
 userRoutes.get('/recommended-courses' ,userControllers.getRecommendedCourses)
 
-// userRoutes.get('/session-requests' , userControllers.getSessionRequests)
+userRoutes.get('/session-requests' ,verifyToken, userControllers.getSessionRequests)
 
 
 

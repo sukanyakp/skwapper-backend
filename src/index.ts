@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 dotenv.config()
 
@@ -36,7 +36,9 @@ app.use(session({
   cookie : {secure : false , maxAge : 24 * 60 * 60 * 1000 }
 }))
 
-app.use('/webhook/stripe',express.raw({type:"application/json"}),webhookRoutes);
+app.use('/webhook',express.raw({type:"application/json"}),webhookRoutes);
+
+
 
 app.use(express.json());
 app.use('/auth',authRoutes)
@@ -44,7 +46,8 @@ app.use('/user', userRoutes)
 app.use('/admin',adminRoutes)
 app.use('/tutor',tutorRoutes)
 app.use('/courses',courseRoutes)
-app.use('/payment',paymentRoutes)
+app.use('/payments',paymentRoutes)
+
 
 
 app.listen(PORT, () => {

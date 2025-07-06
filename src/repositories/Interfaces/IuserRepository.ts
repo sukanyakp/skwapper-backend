@@ -1,3 +1,4 @@
+import { IScheduledSession } from "../../models/notification/scheduledSessionModel";
 import { IStudentProfile } from "../../models/student/studentModel";
 import { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
 import { ITutorial } from "../../models/tutor/TutorialModel";
@@ -21,5 +22,6 @@ export interface IuserRepository extends IBaseRepository<Iuser> {
 
 
 getCoursesByCategory(category: string): Promise<ITutorial[] | null> 
+getSessionById(studentId : string) : Promise<IScheduledSession[] | null>
 
 }

@@ -6,6 +6,8 @@ import TutorProfile, { ITutorProfile } from "../../models/tutor/tutorProfile";
 import Notification from "../../models/notification/notificationModel";
 import TutorialModel, { ITutorial } from "../../models/tutor/TutorialModel";
 import StudentProfile, { IStudentProfile } from "../../models/student/studentModel";
+import scheduledSessionModel, { IScheduledSession } from "../../models/notification/scheduledSessionModel";
+import mongoose from "mongoose";
 
 export class UserRepository extends BaseRepository<Iuser> implements IuserRepository {
   constructor() {
@@ -59,4 +61,26 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
     
     return await TutorialModel.find({ category });
   }
+
+public async getSessionById(studentId: string): Promise<any[]> {
+  return await scheduledSessionModel.aggregate([
+    {
+      $match: {
+        studentId: new mongoose.Types.ObjectId(studentId),
+      },
+    },
+    {
+      $lookup: {
+        from: "tutorprofiles", // ⚠️ should match actual MongoDB collection name
+        localField: "tutorId",
+        foreignField: "_id",
+        as: "tutorProfile",
+      },
+    },
+    {
+      $unwind: "$tutorProfile" // Optional: if you want a single object instead of array
+    },
+  ]);
+}
+
 }

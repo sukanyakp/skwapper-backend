@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { ref } from "process";
 
 export interface IPayment {
     studentId : mongoose.Types.ObjectId;
@@ -32,7 +31,7 @@ const paymentSchema = new Schema<IPayment>({
         required : true
     },
   status: { type: String, enum: ["pending", "succeeded", "failed"], default: "pending" },
-  stripePaymentId: { type: String, required: true },
+  stripePaymentId: { type: String }, //required : true
   paymentDate: { type: Date, default: Date.now },
 
 })

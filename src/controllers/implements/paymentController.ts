@@ -21,7 +21,7 @@ export class PaymentController {
       const studentId = req.userId;
       const { tutor } = req.body;
 
-      const tutorId = tutor.userId
+      const tutorId = tutor._id   // changed it from userId to _id
       const amount = tutor.hourlyRate
       const tutorName = tutor.name
 
@@ -50,11 +50,12 @@ export class PaymentController {
           },
         ],
         mode: "payment",
-        success_url: `${process.env.FRONTEND_URL }/payment-success?tutorId=${tutorId}`,
-        cancel_url: `${process.env.FRONTEND_URL }/tutors/${tutorId}?cancelled=true`,
+        success_url: `${process.env.FRONTEND_URL }/tutors/session-requests`,  //payment-success?tutorId=${tutorId}
+        cancel_url: `${process.env.FRONTEND_URL }/tutors/${tutorId}?cancelled=true`,//tutors/${tutorId}?cancelled=true
         metadata: {
           tutorId,
           studentId: studentId?.toString() || "",
+          amount : amount
         },
       };
 
@@ -65,8 +66,34 @@ export class PaymentController {
 
       res.status(200).json({ sessionId: session.id });
     } catch (error: any) {
-      console.error("❌ Stripe error:", error);
+      console.error("Stripe error:", error);
       res.status(500).json({ message: "Payment session creation failed", error: error.message });
     }
   };
+
+
+  public getPayments = async (req : Request , res : Response) : Promise<void> =>{
+    try {
+      console.log('getPaymets');
+      
+
+      const page = Number(req.query.page) || 1
+      const limit = Number(req.query.limit) || 5
+
+      const {payments , totalPages} = await this.service.getPayments(page,limit)
+      console.log(payments , totalPages);
+      
+      res.status(200).json({payments,totalPages})
+      
+      
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({message : "Failed to fetch the payments"})
+      
+    }
+  }
+
+
+
+
 }

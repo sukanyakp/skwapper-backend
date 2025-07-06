@@ -134,14 +134,25 @@ public sendSessionRequest = async (req: AuthRequest, res: Response): Promise<voi
 };
 
 
-public getSessionRequests = async(req : Request , res : Response): Promise<void> =>{
+public getSessionRequests = async(req : AuthRequest , res : Response): Promise<void> =>{
   try {
 
     console.log('getSwesssionRequests');
+    const studentId = req?.userId
+
+    if(!studentId){
+      res.status(500).json({message : "The studentId is not found"});
+      return;
+    }
+
+    const sessions = await this.service.sessionRequests(studentId)
+    console.log(sessions ,'sessionss');
     
+    res.status(200).json({sessions})
     
   } catch (error) {
     console.log(error);
+    res.status(500).json({message : "Failed to get session Requests"})
     
   }
 }

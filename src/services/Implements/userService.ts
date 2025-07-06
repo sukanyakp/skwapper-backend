@@ -4,6 +4,7 @@ import { ITutorProfile } from "../../models/tutor/tutorProfile";
 import StudentProfile from "../../models/student/studentModel";
 import cloudinary from "../../utils/cloudinaryConfig";
 import User from "../../models/user/userModel";
+import { IScheduledSession } from "../../models/notification/scheduledSessionModel";
 
 export class UserService implements IuserService {
   private UserRepository: IuserRepository;
@@ -61,5 +62,13 @@ export class UserService implements IuserService {
 
    public async getRecommendedCourses(category: string): Promise<any> {
     return this.UserRepository.getCoursesByCategory(category);
+  }
+
+
+  public async sessionRequests(studentId : string) : Promise<IScheduledSession[] | null>{
+    console.log(studentId ,'studentId');
+    
+    return await this.UserRepository.getSessionById(studentId)
+    
   }
 }

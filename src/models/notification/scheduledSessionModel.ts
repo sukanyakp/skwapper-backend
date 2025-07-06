@@ -15,7 +15,7 @@ const scheduledSessionSchema = new Schema<IScheduledSession>(
   {
     tutorId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tutorprofile",
       required: true,
     },
     studentId: {
@@ -25,15 +25,15 @@ const scheduledSessionSchema = new Schema<IScheduledSession>(
     },
     date: {
       type: String,
-      required: true,
+      // required: true,
     },
     time: {
       type: String,
-      required: true,
+      // required: true,
     },
     duration: {
       type: Number,
-      required: true,
+      // required: true,
     },
     status: {
       type: String,
