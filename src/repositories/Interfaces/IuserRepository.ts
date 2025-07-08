@@ -1,4 +1,7 @@
+import { IScheduledSession } from "../../models/notification/scheduledSessionModel";
+import { IStudentProfile } from "../../models/student/studentModel";
 import { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
+import { ITutorial } from "../../models/tutor/TutorialModel";
 import { ITutorProfile } from "../../models/tutor/tutorProfile";
 import { Iuser } from "../../models/user/userModel";
 import { IBaseRepository } from "./IbaseRepository";
@@ -16,5 +19,9 @@ export interface IuserRepository extends IBaseRepository<Iuser> {
      studentId: string,
      message: string
 ): Promise<any>
+
+
+getCoursesByCategory(category: string): Promise<ITutorial[] | null> 
+getSessionById(studentId : string) : Promise<IScheduledSession[] | null>
 
 }

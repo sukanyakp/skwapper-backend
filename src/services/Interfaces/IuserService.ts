@@ -1,3 +1,4 @@
+import { IScheduledSession } from "../../models/notification/scheduledSessionModel";
 import { ITutorProfile } from "../../models/tutor/tutorProfile";
 
 export interface IuserService {
@@ -10,4 +11,7 @@ export interface IuserService {
   tutorId: string,
   studentId: string
   ): Promise<any>
+
+  getRecommendedCourses(userId: string): Promise<any> 
+  sessionRequests(studentId : string) : Promise<any>
 }

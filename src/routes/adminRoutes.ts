@@ -14,11 +14,11 @@ const adminRoutes = express.Router();
 
 const adminAuthMiddleware = [verifyToken, verifyRole('admin')];
 
-adminRoutes.get(
-  '/tutors',
-  adminAuthMiddleware,
-  adminController.getTutors
-);
+// adminRoutes.get(
+//   '/tutors',
+//   // adminAuthMiddleware,
+//   adminController.getTutors
+// );
 
 // adminRoutes.patch(
 //   '/tutors/:id/:action',
@@ -29,7 +29,7 @@ adminRoutes.get(
 
 adminRoutes.get(
   '/tutor-applications',
-   verifyToken,
+  //  verifyToken,
   // adminAuthMiddleware,
   adminController.getTutorApplications  // This is the one (admin/tutors)
 );

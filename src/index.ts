@@ -1,16 +1,22 @@
-import express from 'express';
-import cors from 'cors';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+dotenv.config()
+
+import cors from 'cors';
+
 import authRoutes from './routes/authRoutes'
 import userRoutes from './routes/userRoutes'
 import adminRoutes from './routes/adminRoutes'
 import tutorRoutes from './routes/tutorRoutes'
 import courseRoutes from './routes/courseRoutes'
+import paymentRoutes from './routes/paymentRoutes'
+import webhookRoutes from './routes/webhookRoutes'
+import enrollmentRoutes from './routes/enrollmentRoutes'
+
 import session from 'express-session'
 import db from '../src/config/db'
 import cookieParser from "cookie-parser";
 
-dotenv.config()
 db() 
 
 const app = express();
@@ -18,7 +24,7 @@ const PORT = 3000;
 
 // Enable CORS
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: process.env.FRONTEND_URL, 
   credentials: true               
 }));
 
@@ -31,12 +37,19 @@ app.use(session({
   cookie : {secure : false , maxAge : 24 * 60 * 60 * 1000 }
 }))
 
+app.use('/webhook',express.raw({type:"application/json"}),webhookRoutes);
+
+
+
 app.use(express.json());
 app.use('/auth',authRoutes)
 app.use('/user', userRoutes)
 app.use('/admin',adminRoutes)
 app.use('/tutor',tutorRoutes)
 app.use('/courses',courseRoutes)
+app.use('/payments',paymentRoutes)
+app.use('/enroll',enrollmentRoutes)
+
 
 
 app.listen(PORT, () => {

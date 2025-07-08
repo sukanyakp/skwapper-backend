@@ -1,16 +1,53 @@
 // models/scheduledSession.model.ts
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const scheduledSessionSchema = new mongoose.Schema({
-  tutorId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+export interface IScheduledSession extends Document {
+  tutorId: mongoose.Types.ObjectId;
+  studentId: mongoose.Types.ObjectId;
+  date: string;              // "2025-06-25"
+  time: string;              // "15:00"
+  duration: number;          // in minutes
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  notes?: string;
+}
+
+const scheduledSessionSchema = new Schema<IScheduledSession>(
+  {
+    tutorId: {
+      type: Schema.Types.ObjectId,
+      ref: "Tutorprofile",
+      required: true,
+    },
+    studentId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    date: {
+      type: String,
+      // required: true,
+    },
+    time: {
+      type: String,
+      // required: true,
+    },
+    duration: {
+      type: Number,
+      // required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "confirmed", "completed", "cancelled"],
+      default: "pending",
+    },
+    notes: {
+      type: String,
+    },
   },
-  //I think we need to add studentId also here
-  date: String,
-  time: String,
-  duration: Number,
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-export default mongoose.model("ScheduledSession", scheduledSessionSchema);
+export default mongoose.model<IScheduledSession>(
+  "ScheduledSession",
+  scheduledSessionSchema
+);

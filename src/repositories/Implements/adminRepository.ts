@@ -34,7 +34,7 @@ export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepo
 
   const [applications, total] = await Promise.all([
     TutorApplicationModel.find()
-      .populate("user", "name email isBlocked") // Adjust as needed
+      .populate("user", "name email isBlocked")
       .skip(skip)
       .limit(limit)
       .lean(),

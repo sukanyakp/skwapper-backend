@@ -12,10 +12,13 @@ export class AdminController {
   //  Get all tutor applications
   public getTutorApplications = async (req: Request, res: Response): Promise<void> => {
     try {
+console.log('get tutor applications ');
 
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
       const applications = await this.service.getTutorApplications(page,limit);
+      console.log(applications , page ,limit);
+      
       res.status(200).json(applications);
     } catch (error) {
       console.error("Error fetching tutor applications:", error);
@@ -70,7 +73,11 @@ export class AdminController {
   //  Get all tutors
   public getTutors = async (req: Request, res: Response): Promise<void> => {
     try {
+      console.log('get tutors ');
+      
       const tutors = await this.service.getTutors();
+      console.log(tutors , 'getTutors');
+      
       res.status(200).json(tutors);
     } catch (error) {
       console.error("Error fetching tutors:", error);

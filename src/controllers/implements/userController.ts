@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 import { IuserService } from "../../services/Interfaces/IuserService";
 import { AuthRequest } from "../../types";
+import userModel from "../../models/user/userModel";
+import StudentProfile from "../../models/student/studentModel";
+import courseModel from "../../models/admin/courseModel";
+import TutorialModel from "../../models/tutor/TutorialModel";
+import { ParsedQs } from "qs"; // comes from express
 
 
 export class UserController {
@@ -78,6 +83,8 @@ public getApprovedTutors = async (req: Request, res: Response): Promise<void> =>
       
       
       const tutors = await this.service.getAllApprovedTutors();
+      console.log(tutors);
+      
       
       res.status(200).json(tutors);
     } catch (error) {
@@ -125,6 +132,62 @@ public sendSessionRequest = async (req: AuthRequest, res: Response): Promise<voi
     res.status(500).json({ message: "Failed to send request" });
   }
 };
+
+
+public getSessionRequests = async(req : AuthRequest , res : Response): Promise<void> =>{
+  try {
+
+    console.log('getSwesssionRequests');
+    const studentId = req?.userId
+
+    if(!studentId){
+      res.status(500).json({message : "The studentId is not found"});
+      return;
+    }
+
+    const sessions = await this.service.sessionRequests(studentId)
+    console.log(sessions ,'sessionss');
+    
+    res.status(200).json({sessions})
+    
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message : "Failed to get session Requests"})
+    
+  }
+}
+
+
+
+// GET /user/recommended-courses
+ public getRecommendedCourses = async (
+    req: AuthRequest,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const rawCategory = req.query.category;
+
+      // Ensure it's a string
+      if (typeof rawCategory !== "string") {
+        res.status(400).json({ message: "Category must be a string" });
+        return;
+      }
+
+      const category = rawCategory.trim();
+
+      if (!category) {
+        res.status(400).json({ message: "Category is required" });
+        return;
+      }
+
+      const recommendedCourses = await this.service.getRecommendedCourses(category);
+      res.status(200).json(recommendedCourses);
+    } catch (err: any) {
+      console.error("Error in getRecommendedCourses:", err);
+      res.status(500).json({ message: "Server error" });
+    }
+  };
+
 
 
 

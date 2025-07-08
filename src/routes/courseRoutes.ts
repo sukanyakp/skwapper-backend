@@ -12,5 +12,7 @@ const courseRoutes = express.Router()
 
 courseRoutes.post("/",courseController.createNewCourse)
 courseRoutes.get("/",courseController.getAllCourses)
+courseRoutes.get("/:id",courseController.getCourseById)
+
 
 export default courseRoutes
