@@ -71,4 +71,33 @@ export class UserService implements IuserService {
     return await this.UserRepository.getSessionById(studentId)
     
   }
+
+
+    public async updateStudentProfile(
+    userId: string,
+    profileData: any,
+    file?: Express.Multer.File
+  ): Promise<any> {
+    const existingProfile = await StudentProfile.findOne({ userId });
+
+    if (!existingProfile) {
+      throw new Error("Profile not found");
+    }
+
+    let updatedFields = { ...profileData };
+
+    if (file) {
+      const fileStr = `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
+      const uploadResult = await cloudinary.uploader.upload(fileStr, {
+        folder: "profile_pictures",
+      });
+      updatedFields.profileImage = uploadResult.secure_url;
+    }
+
+    const updatedProfile = await this.UserRepository.updateProfile(userId,updatedFields);
+
+    return updatedProfile;
+  }
+
+
 }
