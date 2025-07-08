@@ -14,4 +14,5 @@ const paymentRoutes = express.Router()
 paymentRoutes.post('/create-order',verifyToken, paymentController.stripePayment ) 
 paymentRoutes.get('/',verifyToken, paymentController.getPayments)
 
+
 export default paymentRoutes;

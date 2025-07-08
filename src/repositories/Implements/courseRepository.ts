@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import CourseModel from "../../models/admin/courseModel";
 import TutorialModel, { ITutorial } from "../../models/tutor/TutorialModel";
 import User, { Iuser } from "../../models/user/userModel";
@@ -34,7 +35,32 @@ export class CourseRepository extends BaseRepository<Iuser> implements IcourseRe
   }
 
 
-   public async getCourseById(courseId: string): Promise<ITutorial | null> {
-    return await TutorialModel.findById(courseId);
-  }
+public async getCourseById(courseId: string): Promise<any | null> {
+  const result = await TutorialModel.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(courseId),
+      },
+    },
+    {
+      $lookup: {
+        from: "tutorprofiles", // exact name of the TutorProfile collection 
+        localField: "tutorId",
+        foreignField: "userId",  // _id
+        as: "tutorProfile",
+      },
+    },
+    {
+      $unwind: {
+        path: "$tutorProfile",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+  ]);
+console.log(result);
+
+  return result[0] || null;
+}
+
+
 }

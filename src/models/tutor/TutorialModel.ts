@@ -11,6 +11,7 @@ export interface ITutorial extends Document {
   movieOrAlbum?: string;
   thumbnail: string;
   tutorId: mongoose.Types.ObjectId;
+  // tutorProfileId: mongoose.Types.ObjectId; // NEW FIELD
   basicContent?: string;
   intermediateContent?: string;
   advancedContent?: string;
@@ -39,6 +40,12 @@ const tutorialSchema = new Schema<ITutorial>(
       ref: "User",
       required: true,
     },
+
+    // tutorProfileId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "TutorProfile",
+    //   required: true,
+    // },
 
     basicContent: { type: String },
     intermediateContent: { type: String },

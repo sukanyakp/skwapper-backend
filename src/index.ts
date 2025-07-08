@@ -11,6 +11,7 @@ import tutorRoutes from './routes/tutorRoutes'
 import courseRoutes from './routes/courseRoutes'
 import paymentRoutes from './routes/paymentRoutes'
 import webhookRoutes from './routes/webhookRoutes'
+import enrollmentRoutes from './routes/enrollmentRoutes'
 
 import session from 'express-session'
 import db from '../src/config/db'
@@ -47,6 +48,7 @@ app.use('/admin',adminRoutes)
 app.use('/tutor',tutorRoutes)
 app.use('/courses',courseRoutes)
 app.use('/payments',paymentRoutes)
+app.use('/enroll',enrollmentRoutes)
 
 
 
