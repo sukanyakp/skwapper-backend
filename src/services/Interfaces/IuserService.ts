@@ -14,4 +14,9 @@ export interface IuserService {
 
   getRecommendedCourses(userId: string): Promise<any> 
   sessionRequests(studentId : string) : Promise<any>
+  updateStudentProfile(
+    userId: string,
+    profileData: any,
+    file?: Express.Multer.File
+  ): Promise<any>
 }

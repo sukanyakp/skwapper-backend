@@ -24,4 +24,7 @@ export interface IuserRepository extends IBaseRepository<Iuser> {
 getCoursesByCategory(category: string): Promise<ITutorial[] | null> 
 getSessionById(studentId : string) : Promise<IScheduledSession[] | null>
 
+updateProfile(userId: string, updatedFields: any) : Promise<any>
+
+
 }

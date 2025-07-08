@@ -189,6 +189,41 @@ public getSessionRequests = async(req : AuthRequest , res : Response): Promise<v
   };
 
 
+ public updateProfile = async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = req?.userId;
+      const { name, bio, instrument, location } = req.body;
+      const file = req?.file;
+
+      if(!file){
+        res.status(500).json({message : "File not found"})
+        return ; 
+      }
+
+      if(!userId){
+        res.status(500).json({message : "userId not found"});
+        return;
+      }
+
+      const profileData = {
+        name,
+        bio,
+        instrument,
+        location,
+      };
+
+      const updatedProfile = await this.service.updateStudentProfile(userId, profileData, file);
+
+      res.status(200).json({ message: "Profile updated successfully", profile: updatedProfile });
+    } catch (error: any) {
+      console.error("Failed to update profile:", error);
+      res.status(500).json({ message: error.message || "Something went wrong" });
+    }
+
+
+
+
+}
 
 
 

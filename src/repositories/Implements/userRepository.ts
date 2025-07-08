@@ -8,6 +8,7 @@ import TutorialModel, { ITutorial } from "../../models/tutor/TutorialModel";
 import StudentProfile, { IStudentProfile } from "../../models/student/studentModel";
 import scheduledSessionModel, { IScheduledSession } from "../../models/notification/scheduledSessionModel";
 import mongoose from "mongoose";
+import { log } from "util";
 
 export class UserRepository extends BaseRepository<Iuser> implements IuserRepository {
   constructor() {
@@ -82,5 +83,24 @@ public async getSessionById(studentId: string): Promise<any[]> {
     },
   ]);
 }
+
+
+ async findByUserId(userId: string): Promise<any> {
+    const res= await User.findOne({  userId });
+    // console.log(res , 'result of findBYUseif');
+    return res
+    
+  }
+
+  async updateProfile(userId: string, updatedFields: any) : Promise<any>{
+
+     const updatedProfile = await StudentProfile.findOneAndUpdate(
+          { userId },
+          updatedFields,
+          { new: true }
+        );
+    return updatedProfile
+    
+  }
 
 }
