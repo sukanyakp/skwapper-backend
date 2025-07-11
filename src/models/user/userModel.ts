@@ -1,7 +1,8 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document ,Types} from "mongoose";
 
 // Interface for User
 export interface Iuser extends Document  {
+    _id: mongoose.Types.ObjectId; 
     name : string
     email : string
     password : string
@@ -14,8 +15,8 @@ export interface Iuser extends Document  {
     bio:string
     createdAt : Date
     updatedAt : Date
+    tutorProfileId : mongoose.Types.ObjectId; // not string ok ? 
    
-
 }
 
 // Schema
@@ -62,6 +63,9 @@ const userSchema = new mongoose.Schema({
     bio:{
             type:String,  
     },
+    tutorProfileId : {
+        type: mongoose.Schema.Types.ObjectId, ref: "TutorProfile", // why we need to mension here as TutorProfile ?
+    }
   
 },
 { 

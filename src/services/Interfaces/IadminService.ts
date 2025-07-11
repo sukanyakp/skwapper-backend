@@ -1,3 +1,4 @@
+import { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
 import { Iuser } from "../../models/user/userModel";
 
 export interface IAdminService {
@@ -14,5 +15,5 @@ export interface IAdminService {
     action: "approved" | "rejected"
   ): Promise<any>;
 
-  toggleBlockUser(userId: string, block: boolean): Promise<Iuser | null>;
+  toggleBlockUser(userId: string, block: boolean): Promise<Iuser |ITutorApplication| null>;
 }

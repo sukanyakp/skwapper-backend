@@ -73,10 +73,9 @@ console.log('get tutor applications ');
   //  Get all tutors
   public getTutors = async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('get tutors ');
       
       const tutors = await this.service.getTutors();
-      console.log(tutors , 'getTutors');
+      // console.log(tutors , 'getTutors');
       
       res.status(200).json(tutors);
     } catch (error) {
@@ -87,11 +86,16 @@ console.log('get tutor applications ');
 
   //  Toggle block/unblock user
   public toggleBlockUser = async (req: Request, res: Response): Promise<void> => {
+    console.log('here we are at the toggleBlockUser');
+    
     const { userId } = req.params;
     const { block } = req.body;
+console.log(userId , block , 'at blockUser controller ');
 
     try {
       const user = await this.service.toggleBlockUser(userId, block);
+      console.log(user , 'user details ');
+      
 
       res.status(200).json({
         message: `User ${block ? "blocked" : "unblocked"} successfully`,

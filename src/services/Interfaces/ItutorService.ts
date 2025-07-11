@@ -25,4 +25,7 @@ export interface ITutorService {
   getTutorAvailability(tutorId: string): Promise<IAvailability | null>
 
   updateProfile(userId: string, profileData: any, file?: Express.Multer.File) : Promise<ITutorProfile | null>
+
+  approveRequest(tutorId: string, notificationId: string, scheduledTime: string) : Promise<any>
+  getTutorSessions(tutorId: string): Promise<any> 
 }

@@ -39,52 +39,47 @@ async register(user: Iuser): Promise<string> {
 
 
 
+async login(email: string, password: string): Promise<{
+  accessToken: string;
+  refreshToken: string;
+  user: Iuser;
+}> {
+  console.log("Service: Login initiated");
 
-  async login(email: string, password: string): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    user: Iuser;
-  }> {
-    console.log("Service: Login initiated");
-    
-    
-    // 1. Find user
-    const user = await this.userRepository.findByEmail(email);
-    
-    if (!user) {
-      throw new Error("User not found");
-    }
-    
-    console.log( user.role ,'role: user.role');
-    console.log(user , 'here is the user ');
-    console.log("Entered password:", password);
-    console.log("Stored hash in DB:", user.password);
-
-    
-    // 2. Validate password
-    const isPasswordValid = await comparePassword(password, user.password);
-    console.log('a' ,isPasswordValid);
-
-    if (!isPasswordValid) {
-      throw new Error("Invalid password");
-    }
-    console.log('b ,isPasswordValid');
-
-    // 3. Generate tokens
-    const accessToken = generateAccessToken({ id: user._id, email: user.email ,role: user.role});
-    const refreshToken = generateRefreshToken({ id: user._id });
-    
-
-    // console.log( accessToken,'accessTokend ');
-    // console.log( refreshToken,'accessTokend ');
-    
-
-    return {
-      accessToken,
-      refreshToken,
-      user,
-    };
+  // 1. Find user
+  const user = await this.userRepository.findByEmail(email);
+  if (!user) {
+    throw new Error("User not found");
   }
+
+  // 2. Check if user is blocked
+  if (user.isBlocked) {
+    throw new Error("Your account has been blocked. Please contact support.");
+  }
+
+  console.log(user.role, 'role: user.role');
+  console.log(user, 'here is the user');
+  console.log("Entered password:", password);
+  console.log("Stored hash in DB:", user.password);
+
+  // 3. Validate password
+  const isPasswordValid = await comparePassword(password, user.password);
+  console.log('Password valid:', isPasswordValid);
+
+  if (!isPasswordValid) {
+    throw new Error("Invalid password");
+  }
+
+  // 4. Generate tokens
+  const accessToken = generateAccessToken({ id: user._id, email: user.email, role: user.role });
+  const refreshToken = generateRefreshToken({ id: user._id });
+
+  return {
+    accessToken,
+    refreshToken,
+    user,
+  };
+}
 
 
 

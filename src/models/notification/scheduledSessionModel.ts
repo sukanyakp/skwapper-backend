@@ -2,6 +2,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IScheduledSession extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
   tutorId: mongoose.Types.ObjectId;
   studentId: mongoose.Types.ObjectId;
   date: string;              // "2025-06-25"
@@ -15,7 +16,7 @@ const scheduledSessionSchema = new Schema<IScheduledSession>(
   {
     tutorId: {
       type: Schema.Types.ObjectId,
-      ref: "Tutorprofile",
+      ref: "User", //TutorProfile
       required: true,
     },
     studentId: {

@@ -32,4 +32,8 @@ export interface ItutorRepository extends IBaseRepository<Iuser> {
   getAvailability(tutorId: string): Promise<IAvailability | null>;
 
   updateTutorByUserId(userId: string, updateData: any): Promise<ITutorProfile | null>;
+  approveRequest(tutorId: string, notificationId: string, scheduledTime: string) : Promise<any>
+
+
+   getSessionsByTutor(tutorId: string) : Promise<any>
 }

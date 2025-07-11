@@ -71,7 +71,18 @@ export class TutorService implements ITutorService {
       profileImage: uploadResult.secure_url,
     };
 
-    return await TutorProfile.create(profileDataWithImage);
+    const res = await TutorProfile.create(profileDataWithImage);
+
+    console.log(res._id ,'tutorProfile_id');
+
+     // Update user document with tutorProfileId
+  await User.updateOne(
+    { _id: profileData.userId },
+    { $set: { tutorProfileId: res._id } }
+  );
+
+    return res 
+    
   }
 
   public async getTutorProfile(userId: string): Promise<ITutorProfile | null> {
@@ -152,5 +163,15 @@ export class TutorService implements ITutorService {
 
   public async getTutorAvailability(tutorId: string): Promise<IAvailability | null> {
     return await this.TutorRepository.getAvailability(tutorId);
+  }
+
+
+
+   public async approveRequest(tutorId: string, notificationId: string, scheduledTime: string) : Promise<any>{
+    return await this.TutorRepository.approveRequest(tutorId, notificationId, scheduledTime);
+  }
+
+    async getTutorSessions(tutorId: string): Promise<any> {
+    return await this.TutorRepository.getSessionsByTutor(tutorId);
   }
 }

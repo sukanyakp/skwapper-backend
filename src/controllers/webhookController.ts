@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import ScheduledSession from "../models/notification/scheduledSessionModel";
 import Notification from "../models/notification/notificationModel";
 import Payments from "../models/student/paymentModel";
+import Wallet from "../models/student/walletModel";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -73,6 +74,23 @@ export class WebhookController {
            studentId,
            amount 
         })
+// create walletModel
+await Wallet.updateOne(
+  { userId: tutorId },
+  {
+    $push: {
+      transactions: {
+        amount: Number(amount),
+        type: "credit",
+        reference: session.id,
+        status: "pending", // ✅ Confirmed payment, but session not completed yet
+        sessionId: null,   // You can add it later when session is confirmed
+      },
+    },
+  },
+  { upsert: true }
+);
+
 
         console.log("Created session + notification.");
       } catch (err) {

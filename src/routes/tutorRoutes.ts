@@ -51,5 +51,10 @@ router.post('/availability',verifyToken,tutorControllers.setAvailability)
 router.get('/availability',verifyToken,tutorControllers.getAvailability)
 router.put('/availability', verifyToken, tutorControllers.updateAvailability)
 
+router.post('/approve-request' ,verifyToken , tutorControllers.approveRequest)
+
+router.get("/scheduled-sessions", verifyToken, tutorControllers.getTutorSessions);
+
+
 
 export default router;

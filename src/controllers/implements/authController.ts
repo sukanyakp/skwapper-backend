@@ -25,9 +25,9 @@ export class AuthController {
   };
 
 
-  public login = async (req: Request, res: Response): Promise<void> => {
+public login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     if (!email || !password) {
       res.status(400).json({ message: "Email and password are required" });
@@ -36,17 +36,28 @@ export class AuthController {
 
     // Auth service handles password verification & user fetching
     const { accessToken, refreshToken, user } = await this.service.login(email, password);
-    console.log(accessToken ,'accessToken at the backend');
-    
+    console.log(user.isBlocked);
 
-    // Role-based logic 
-    const allowedRoles = ["student", "tutor", "admin"];
-    if (!allowedRoles.includes(user.role)) {
-      res.status(403).json({ message: "Access denied: Unauthorized role" });
+    //  Check if the user is blocked
+    if (user.isBlocked) {
+      res.status(403).json({ message: "Your account is blocked. Please contact support." });
       return;
     }
 
-    // Set refresh token as httpOnly cookie
+    //  Check if role matches for admin
+    if (role === "admin" && user.role !== "admin") {
+      res.status(401).json({ message: "Unauthorized: Admins only" });
+      return;
+    }
+
+    // Allow only specific roles
+    const allowedRoles = ["student", "tutor", "admin"];
+    if (!allowedRoles.includes(user.role)) {
+      res.status(401).json({ message: "Access denied: Unauthorized role" });
+      return;
+    }
+
+    // 🍪 Set refresh token cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -54,7 +65,7 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Return token + user info including role
+    // 🎉 Success
     res.status(200).json({
       message: "Login successful",
       token: accessToken,
@@ -63,7 +74,7 @@ export class AuthController {
         _id: user._id,
         email: user.email,
         name: user.name,
-        role: user.role, //  important for frontend routing
+        role: user.role,
       },
     });
 
@@ -71,6 +82,7 @@ export class AuthController {
     res.status(401).json({ message: error.message || "Login failed" });
   }
 };
+
 
 
   
@@ -166,6 +178,9 @@ public resetPassword = async(req : Request , res : Response) : Promise<void> =>{
 
 public refreshToken = async (req: Request, res: Response): Promise<void> => {
   try {
+
+    console.log('refresh token');
+    
     const token = req.cookies.refreshToken;
     console.log('heloo refreshToken' ,token);
     
@@ -176,6 +191,8 @@ public refreshToken = async (req: Request, res: Response): Promise<void> => {
     }
 
     const accessToken = await this.service.refreshToken(token);
+    console.log(accessToken);
+    
 
     res.status(200).json({
       message: "Access token refreshed successfully",
