@@ -19,7 +19,7 @@ authRoutes.post('/forgot-password' , authController.forgotPassword)
 
 authRoutes.post("/reset-password/:token", authController.resetPassword);
 
-authRoutes.post('/refresh-token',authController.refreshToken)
+authRoutes.get('/refresh-token',authController.refreshToken) // GET 
 
 
 export default authRoutes

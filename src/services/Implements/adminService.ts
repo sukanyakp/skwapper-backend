@@ -1,6 +1,7 @@
 import { IAdminService } from "../Interfaces/IadminService";
 import { IAdminRepository } from "../../repositories/Interfaces/IadminRepository";
 import { Iuser } from "../../models/user/userModel";
+import { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
 
 export class AdminService implements IAdminService {
   private UserRepository: IAdminRepository;
@@ -38,14 +39,23 @@ public async getTutorApplications  (page: number, limit: number): Promise<any> {
     return await this.UserRepository.updateTutorApplicationStatus(applicationId, action, role);
   }
 
-  public async toggleBlockUser(userId: string, block: boolean): Promise<Iuser | null> {
+  public async toggleBlockUser(userId: string, block: boolean): Promise<Iuser | ITutorApplication | null> {
     const user = await this.UserRepository.findById(userId);
     if (!user) throw new Error("User not found");
+    console.log(user.role ,'user.role');
 
     if (user.role === "tutor") {
-      return await this.UserRepository.tutorBlockStatus(userId, block);
+      console.log('inside user.roel');
+      
+      const tutor = await this.UserRepository.tutorBlockStatus(userId, block);
+      console.log(tutor , 'tutor');
+      
+
+       return tutor
     } else {
       return await this.UserRepository.userBlockStatus(userId, block);
     }
   }
+
+
 }

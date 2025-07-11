@@ -4,6 +4,7 @@ import { ITutorService } from "../../services/Interfaces/ItutorService";
 import { AuthRequest } from "../../types";
 import scheduledSession from "../../models/notification/scheduledSessionModel";
 import Availability from "../../models/tutor/tutorAvailability";
+import session from "express-session";
 
 
 export class TutorController {
@@ -260,6 +261,8 @@ public getMyCourses = async (req: AuthRequest, res: Response) : Promise<void> =>
 public  scheduleSession = async(req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { date, time, duration } = req.body;
+    console.log(date , time ,duration , 'at schduled session');
+    
     const tutorId = req.userId;
 
     const session = await scheduledSession.create({ tutorId, date, time, duration });
@@ -319,6 +322,59 @@ public setAvailability = async (req: AuthRequest, res: Response) : Promise<void>
     res.status(500).json({ message: "Failed to update availability" });
   }
 }
+
+
+
+ public approveRequest = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+
+      console.log('req approved');
+      
+      const { notificationId, scheduledTime } = req.body;
+      const tutorId = req?.userId; 
+      console.log(scheduledTime ,notificationId ,'');
+      
+
+      if(!tutorId){
+        res.status(500).json({message : "Tutor not found"})
+        return;
+      }
+
+      if (!notificationId || !scheduledTime) {
+        res.status(400).json({ message: "Missing required fields" });
+        return;
+      }
+
+      const session = await this.service.approveRequest(tutorId, notificationId, scheduledTime);
+
+      console.log( session ,'session');
+      
+      res.status(200).json({ message: "Session approved and scheduled", session });
+    } catch (err: any) {
+      console.error("Error approving request:", err);
+      res.status(500).json({ message: err.message || "Failed to approve request" });
+    }
+  };
+
+
+   public getTutorSessions = async (req: AuthRequest, res: Response) => {
+    try {
+      const tutorId = req.userId;
+      console.log('getTutorSessions . . . ');
+      
+      if(!tutorId){
+        res.status(500).json({message : 'tutorId not found'});
+        return
+      }
+      const sessions = await this.service.getTutorSessions(tutorId);
+      console.log(sessions ,'sessions');
+      
+      res.status(200).json( {sessions} );
+    } catch (err) {
+      console.error("Failed to get tutor sessions:", err);
+      res.status(500).json({ message: "Failed to get sessions" });
+    }
+  };
 
 
 

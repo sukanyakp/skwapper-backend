@@ -2,6 +2,7 @@ import { Document } from "mongoose";
 import mongoose, { Schema } from "mongoose";
 
 export interface ITutorApplication extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
   user: { type: mongoose.Schema.Types.ObjectId; ref: "User" };
   documents: string[]; // Cloudinary URLs
   title: string;

@@ -7,6 +7,8 @@ import TutorialModel, { ITutorial } from "../../models/tutor/TutorialModel";
 import Notification from "../../models/notification/notificationModel";
 import Availability, { IAvailability } from "../../models/tutor/tutorAvailability";
 import TutorProfile, { ITutorProfile } from "../../models/tutor/tutorProfile";
+import scheduledSessionModel from "../../models/notification/scheduledSessionModel";
+import Payment from "../../models/student/paymentModel";
 
 interface TutorApplicationData {
   category: string;
@@ -68,7 +70,14 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
 
   // Get session requests (from notifications)
   public async getSessionRequests(tutorId: string): Promise<any> {
-    return await Notification.find({ recipientId: tutorId })
+    console.log(tutorId ,'tutorId at getsession req');
+
+    const tutorProfileId = await User.findOne({_id : tutorId})
+    console.log(tutorProfileId ,'TutorProfile');
+    const id = tutorProfileId?.tutorProfileId 
+    
+    
+    return await Notification.find({ recipientId : id }) //reciepient Id
       .populate("senderId", "name email")
       .sort({ createdAt: -1 });
   }
@@ -98,4 +107,68 @@ export class TutorRepository extends BaseRepository<Iuser> implements ItutorRepo
       { new: true, runValidators: true }
     );
   }
+
+
+
+   public async approveRequest(tutorId: string, notificationId: string, scheduledTime: string): Promise<any> {
+    const notification = await Notification.findById(notificationId);
+
+    if (!notification) {
+      throw new Error("Notification not found");
+    }
+
+    const session = await scheduledSessionModel.create({
+      tutorId,
+      studentId: notification.senderId,
+      scheduledTime,
+      status: "confirmed",
+    });
+
+    // Optionally update notification status or delete
+    await Notification.findByIdAndDelete(notificationId);
+
+    return session;
+  }
+
+
+//   async getSessionsByTutor(tutorId: string) : Promise<any>{
+//     console.log(tutorId ,'tutorId');
+//     Payment.find({  payment })
+    
+//     return await scheduledSessionModel.find({ tutorId })
+//       .populate("studentId", "name email")
+//       .populate("tutorId", "name email")
+//       .sort({ scheduledTime: 1 });
+//   }
+
+
+
+async getSessionsByTutor(tutorId: string): Promise<any> {
+  console.log(tutorId, "tutorId");
+
+  const sessions = await scheduledSessionModel
+    .find({ tutorId })
+    .populate("studentId", "name email")
+    .populate("tutorId", "name email")
+    .sort({ scheduledTime: 1 });
+
+  for (const session of sessions) {
+    // Update the related payment's requestStatus to confirmed
+    await Payment.updateOne(
+      {
+        tutorId: session.tutorId,
+        studentId: session.studentId,
+        requestStatus: "pending", // only update if not already confirmed
+      },
+      {
+        $set: { requestStatus: "confirmed" },
+      }
+    );
+  }
+
+  return sessions;
+}
+
+
+
 }

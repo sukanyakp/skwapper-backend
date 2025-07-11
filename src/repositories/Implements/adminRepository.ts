@@ -1,7 +1,7 @@
 import { BaseRepository } from "./baseRepository";
 import { IAdminRepository } from "../Interfaces/IadminRepository";
 import User, { Iuser } from "../../models/user/userModel";
-import TutorApplicationModel from "../../models/tutor/tutorApplicationModel";
+import TutorApplicationModel, { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
 import type {Role} from "../../types/role.types"
 
 export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepository {
@@ -9,12 +9,24 @@ export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepo
     super(User);
   }
 
-  async tutorBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
-    return await TutorApplicationModel.findOneAndUpdate(
-      { user: userId },
-      { isBlocked: block },
-      { new: true }
-    );
+  async tutorBlockStatus(userId: string, block: boolean): Promise<ITutorApplication  | null> { //ITutorApplication
+    console.log('at userRepository');
+  const user = await User.findByIdAndUpdate(
+  userId,
+  { isApproved: !block },
+  { new: true }
+);
+console.log(user, 'user at repository');
+
+const tutorApp = await TutorApplicationModel.findOneAndUpdate(
+  { user: userId },
+  { isBlocked: block },
+  { new: true }
+);
+console.log(tutorApp, 'tutorApp');
+
+return tutorApp;
+
   }
 
   async userBlockStatus(userId: string, block: boolean): Promise<Iuser | null> {
@@ -81,10 +93,10 @@ export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepo
 
 
    public async getUsersPaginated(skip: number, limit: number): Promise<Iuser[]> {
-    return await User.find().skip(skip).limit(limit);
+    return await User.find({role: 'student'}).skip(skip).limit(limit);
   }
 
   public async getUserCount(): Promise<number> {
-    return await User.countDocuments();
+    return await User.countDocuments({role: 'student'});
   }
 }

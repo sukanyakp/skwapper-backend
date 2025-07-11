@@ -1,41 +1,45 @@
 import jwt from "jsonwebtoken";
 import { Response, NextFunction } from "express";
-import { AuthRequest } from "../types"; 
+import { AuthRequest } from "../types";
 
+type UserRole = "admin" | "tutor" | "student";
+
+interface TokenPayload {
+  id: string;
+  role: UserRole;
+}
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
-  console.log(authHeader , 'authHeader at middleware');
+  console.log(authHeader, "authHeader at middleware");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-     res.status(401).json({ message: "Unauthorized: Token missing" });
-     return;
+    res.status(403).json({ message: "Unauthorized: Token missing" }); // 403 for missing
+    return;
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
-  
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as { id?: string };
+    console.log('before decoding ');
+    
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as TokenPayload;
+    console.log('after decode')
+    console.log(decoded ,'decoded');
+    
 
-    if (!decoded.id) {
-      res.status(401).json({ message: "Unauthorized: Invalid token payload" });
+    if (!decoded.id || !decoded.role) {
+      res.status(403).json({ message: "Unauthorized: Invalid token payload" }); // 403 for bad token
       return;
     }
 
     req.userId = decoded.id;
-    console.log(req.userId , 'req.userId');
+    req.userRole = decoded.role;
 
     next();
-    console.log('next');
-    
   } catch (err: any) {
     console.error("JWT verification failed:", err);
 
-    // **Send 403 only if token expired, else 401**
-    if (err.name === "TokenExpiredError") {
-      res.status(403).json({ message: "Forbidden: Token expired" });
-    } else {
-      res.status(401).json({ message: "Unauthorized: Invalid token" });
-    }
+    //  Always send 403 for token errors, so frontend retries
+    res.status(403).json({ message: "Unauthorized: Invalid or expired token" });
   }
 };
