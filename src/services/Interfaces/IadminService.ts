@@ -4,9 +4,9 @@ import { Iuser } from "../../models/user/userModel";
 export interface IAdminService {
   getTutors(): Promise<Iuser[]>;
 
- getAllUsers(page: number, limit: number): Promise<{ users: Iuser[]; totalPages: number }> 
+ getAllUsers(page: number, limit: number,search: string): Promise<{ users: Iuser[]; totalPages: number }> 
 
-  getTutorApplications  (page: number, limit: number) : Promise<any>;
+  getTutorApplications  (page: number, limit: number ,search : string) : Promise<any>;
 
   getTutorApplicationById(applicationId: string): Promise<any | null>;
 

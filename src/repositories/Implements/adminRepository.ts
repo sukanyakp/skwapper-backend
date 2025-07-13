@@ -3,6 +3,7 @@ import { IAdminRepository } from "../Interfaces/IadminRepository";
 import User, { Iuser } from "../../models/user/userModel";
 import TutorApplicationModel, { ITutorApplication } from "../../models/tutor/tutorApplicationModel";
 import type {Role} from "../../types/role.types"
+import { PipelineStage } from "mongoose";
 
 export class AdminRepository extends BaseRepository<Iuser> implements IAdminRepository {
   constructor() {
@@ -41,17 +42,75 @@ return tutorApp;
     return await User.find({}, "-password");
   }
 
-  async fetchTutorApplications (page: number, limit: number) : Promise<any> {
+  async fetchTutorApplications (page: number, limit: number ,search : string) : Promise<any> {
   const skip = (page - 1) * limit;
+  // Create a case-insensitive regex from the search string
+  const searchRegex = new RegExp(search, "i");
 
-  const [applications, total] = await Promise.all([
-    TutorApplicationModel.find()
-      .populate("user", "name email isBlocked")
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-    TutorApplicationModel.countDocuments(),
-  ]);
+ const pipeline: PipelineStage[] = [
+  {
+    $lookup: {
+      from: "users",
+      localField: "user",
+      foreignField: "_id",
+      as: "userData",
+    },
+  },
+  { $unwind: "$userData" },
+  {
+    $match: {
+      $or: [
+        { "userData.name": { $regex: searchRegex } },
+        { "userData.email": { $regex: searchRegex } },
+      ],
+    },
+  },
+  {
+    $project: {
+      status: 1,
+      isBlocked: 1,
+      user: "$userData._id",
+      name: "$userData.name",
+      email: "$userData.email",
+    },
+  },
+  { $skip: skip },
+  { $limit: limit },
+];
+  
+
+  const applications = await TutorApplicationModel.aggregate(pipeline);
+
+  const countPipeline = [
+    {
+      $lookup : {
+        from : 'users',
+        localField : 'user',
+        foreignField : '_id',
+        as : 'userData'
+      }
+    },
+    {$unwind : '$userData'},
+    {
+      $match : {
+        $or : [
+          {'userData.name' : {$regex : searchRegex }},
+          { 'userData.email' : {$regex : searchRegex}}
+        ]
+      }
+    },
+    {
+      $count : 'total'
+    }
+  ]
+
+
+
+
+  const countResult = await TutorApplicationModel.aggregate(countPipeline);
+  const total = countResult.length > 0 ? countResult[0].total : 0;
+
+
 
   return {
     applications,
@@ -92,8 +151,32 @@ return tutorApp;
   }
 
 
-   public async getUsersPaginated(skip: number, limit: number): Promise<Iuser[]> {
-    return await User.find({role: 'student'}).skip(skip).limit(limit);
+   public async getUsersPaginated(skip: number, limit: number ,search:string): Promise<Iuser[]> {
+
+    const searchRegex = new RegExp(search,'i');
+
+    const pipeline : PipelineStage[] =[
+      {
+        $match : {
+          role : 'student',
+          $or : [
+            {name : {$regex : searchRegex}},
+            {email : {$regex : searchRegex}},
+
+          ]
+        }
+      },
+      {
+        $skip : skip
+      },
+      {
+        $limit : limit
+      }
+    ]
+    console.log('heelooo getstudents',search);
+    
+    return await User.aggregate(pipeline)
+   
   }
 
   public async getUserCount(): Promise<number> {
