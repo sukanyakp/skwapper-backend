@@ -16,8 +16,11 @@ console.log('get tutor applications ');
 
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-      const applications = await this.service.getTutorApplications(page,limit);
-      console.log(applications , page ,limit);
+    const search = req.query.search as string 
+    console.log(search ,'searching .... ... ');
+    
+      const applications = await this.service.getTutorApplications(page,limit,search);
+      console.log(applications ,'applications');
       
       res.status(200).json(applications);
     } catch (error) {
@@ -107,13 +110,14 @@ console.log(userId , block , 'at blockUser controller ');
     }
   };
 
-  //  Get all users
+  //  Get all students
   public getAllUsers = async (req: Request, res: Response): Promise<void> => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 5;
+      const search = req.query.search as string
 
-      const { users, totalPages } = await this.service.getAllUsers(page, limit);
+      const { users, totalPages } = await this.service.getAllUsers(page, limit,search);
       res.status(200).json({ users, totalPages });
     } catch (err) {
       console.error("Error fetching users:", err);
