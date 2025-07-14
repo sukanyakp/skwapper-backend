@@ -7,6 +7,7 @@ import { sendResetEmail  } from "../../utils/email.util";
 import redisClient from "../../config/redis";
 import { generateOTP } from "../../utils/otp.util";
 import { sendOtpEmail } from "../../utils/email.util";
+import { mapUserToDto, UserDto } from "../../dto";
 
 
 
@@ -42,7 +43,7 @@ async register(user: Iuser): Promise<string> {
 async login(email: string, password: string): Promise<{
   accessToken: string;
   refreshToken: string;
-  user: Iuser;
+  user: UserDto | null;
 }> {
   console.log("Service: Login initiated");
 
@@ -74,17 +75,18 @@ async login(email: string, password: string): Promise<{
   const accessToken = generateAccessToken({ id: user._id, email: user.email, role: user.role });
   const refreshToken = generateRefreshToken({ id: user._id });
 
+  const newUser = user ? mapUserToDto(user) : null
+
   return {
     accessToken,
     refreshToken,
-    user,
+    user : newUser,
   };
 }
 
 
-
    
-async verifyOtp(email: string, otp: string): Promise<Iuser> {
+async verifyOtp(email: string, otp: string): Promise<UserDto | null> {
   const key = `user-register:${email}`;
   const data = await redisClient.get(key);
 
@@ -111,7 +113,7 @@ async verifyOtp(email: string, otp: string): Promise<Iuser> {
   const savedUser = await this.userRepository.create(userToCreate);
 
   await redisClient.del(key);
-  return savedUser;
+  return savedUser ? mapUserToDto(savedUser) : null
 }
 
 

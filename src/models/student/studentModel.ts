@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { Document, Types } from "mongoose";
 
 export interface IStudentProfile extends Document {
+  _id :mongoose.Types.ObjectId; 
   userId: Types.ObjectId;
   name: string;
   bio?: string;
@@ -15,6 +16,7 @@ export interface IStudentProfile extends Document {
 }
 
 const studentProfileSchema = new mongoose.Schema({
+  // _id : mongoose.Schema.Types.ObjectId,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

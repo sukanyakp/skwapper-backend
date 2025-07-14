@@ -1,12 +1,13 @@
-import { IScheduledSession } from "../../models/notification/scheduledSessionModel";
-import { ITutorProfile } from "../../models/tutor/tutorProfile";
+import { StudentProfileDto } from "../../dto/studentProfile.dto";
+import { TutorProfileDto } from "../../dto/tutorProfile.dto";
+
 
 export interface IuserService {
 
   createStudentProfile(profileData: any,file: Express.Multer.File): Promise<any>
   getStudentProfile (userId: string) : Promise<any>
-  getAllApprovedTutors(): Promise<ITutorProfile[]>
-  getTutorById(tutorId: string) : Promise<ITutorProfile>
+  getAllApprovedTutors(): Promise<TutorProfileDto[]> 
+  getTutorById(tutorId: string): Promise<TutorProfileDto | null> 
   createSessionRequestNotification(
   tutorId: string,
   studentId: string
@@ -18,5 +19,5 @@ export interface IuserService {
     userId: string,
     profileData: any,
     file?: Express.Multer.File
-  ): Promise<any>
+  ): Promise<StudentProfileDto | null>
 }

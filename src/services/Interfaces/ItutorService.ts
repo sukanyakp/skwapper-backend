@@ -1,3 +1,5 @@
+import { SessionDto } from "../../dto/session.dto";
+import { TutorProfileDto } from "../../dto/tutorProfile.dto";
 import { IAvailability } from "../../models/tutor/tutorAvailability";
 import {  ITutorial } from "../../models/tutor/TutorialModel";
 import { ITutorProfile } from "../../models/tutor/tutorProfile";
@@ -19,13 +21,13 @@ export interface ITutorService {
   ): Promise<ITutorial> 
 
   getCoursesByTutor(tutorId: string) : Promise<ITutorial[]>
-  getSessionRequests(tutorId: string) : Promise<string>
+  getSessionRequests(tutorId: string) :Promise<SessionDto | null>
 
   setTutorAvailability(tutorId: string, availability: any): Promise<IAvailability>
   getTutorAvailability(tutorId: string): Promise<IAvailability | null>
 
-  updateProfile(userId: string, profileData: any, file?: Express.Multer.File) : Promise<ITutorProfile | null>
+  updateProfile(userId: string, profileData: any, file?: Express.Multer.File) : Promise<TutorProfileDto | null>
 
   approveRequest(tutorId: string, notificationId: string, scheduledTime: string) : Promise<any>
-  getTutorSessions(tutorId: string): Promise<any> 
+  getTutorSessions(tutorId: string): Promise<SessionDto | null> 
 }

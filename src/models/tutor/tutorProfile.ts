@@ -1,8 +1,9 @@
-// models/tutorProfile.model.ts
+
 import mongoose from "mongoose";
 import { Document, Types } from "mongoose";
 
 export interface ITutorProfile extends Document {
+  _id : mongoose.Types.ObjectId;
   userId: Types.ObjectId;
   name: string;
   bio?: string;
@@ -17,6 +18,7 @@ export interface ITutorProfile extends Document {
 }
 
 const tutorProfileSchema = new mongoose.Schema({
+  
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

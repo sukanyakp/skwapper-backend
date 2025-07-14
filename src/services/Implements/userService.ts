@@ -5,6 +5,9 @@ import StudentProfile from "../../models/student/studentModel";
 import cloudinary from "../../utils/cloudinaryConfig";
 import User from "../../models/user/userModel";
 import { IScheduledSession } from "../../models/notification/scheduledSessionModel";
+import { mapStudentToDto, StudentProfileDto } from "../../dto/studentProfile.dto";
+import { mapTutorToDto, TutorProfileDto } from "../../dto/tutorProfile.dto";
+import { mapSessionToDto, SessionDto } from "../../dto/session.dto";
 
 export class UserService implements IuserService {
   private UserRepository: IuserRepository;
@@ -13,7 +16,7 @@ export class UserService implements IuserService {
     this.UserRepository = UserRepository;
   }
 
-  public async createStudentProfile(profileData: any, file: Express.Multer.File): Promise<any> {
+  public async createStudentProfile(profileData: any, file: Express.Multer.File): Promise<StudentProfileDto | null> {
     const existing = await StudentProfile.findOne({ userId: profileData.userId });
     if (existing) throw new Error("Profile already exists");
 
@@ -25,21 +28,26 @@ export class UserService implements IuserService {
       profileImage: uploadResult.secure_url,
     };
 
-    return await StudentProfile.create(profileDataWithImage); // or via repo
+    const student = await StudentProfile.create(profileDataWithImage); 
+    return student ? mapStudentToDto(student) : null;
   }
 
-  public async getStudentProfile(userId: string): Promise<any | null> {
-    return await StudentProfile.findOne({ userId });
+  public async getStudentProfile(userId: string): Promise<StudentProfileDto | null> {
+    const profile = await StudentProfile.findOne({ userId });
+    return profile ? mapStudentToDto(profile) : null;
+
   }
 
-  public async getAllApprovedTutors(): Promise<ITutorProfile[]> {
-    return await this.UserRepository.findApprovedTutors();
-  }
+public async getAllApprovedTutors(): Promise<TutorProfileDto[]> {
+  const tutors = await this.UserRepository.findApprovedTutors();
+  return tutors.map(mapTutorToDto); // returns [] if empty
+}
 
-  public async getTutorById(tutorId: string): Promise<ITutorProfile> {
+
+  public async getTutorById(tutorId: string): Promise<TutorProfileDto | null> {
     const tutor = await this.UserRepository.findTutorById(tutorId);
     if (!tutor) throw new Error("Tutor not found");
-    return tutor;
+    return tutor ? mapTutorToDto(tutor) : null;
   }
 
   // public async sendVideoSessionRequest(tutorId: string, studentId: string): Promise<string> {
@@ -65,19 +73,20 @@ export class UserService implements IuserService {
   }
 
 
-  public async sessionRequests(studentId : string) : Promise<IScheduledSession[] | null>{
-    console.log(studentId ,'studentId');
-    
-    return await this.UserRepository.getSessionById(studentId)
-    
-  }
+public async sessionRequests(studentId: string): Promise<SessionDto[]> {
+  console.log(studentId, 'studentId');
+
+  const sessions = await this.UserRepository.getSessionById(studentId);
+  return sessions ? sessions.map(mapSessionToDto) : [];
+}
+
 
 
     public async updateStudentProfile(
     userId: string,
     profileData: any,
     file?: Express.Multer.File
-  ): Promise<any> {
+  ): Promise<StudentProfileDto | null> {
     const existingProfile = await StudentProfile.findOne({ userId });
 
     if (!existingProfile) {
@@ -96,7 +105,7 @@ export class UserService implements IuserService {
 
     const updatedProfile = await this.UserRepository.updateProfile(userId,updatedFields);
 
-    return updatedProfile;
+    return updatedProfile ? mapStudentToDto(updatedProfile) : null
   }
 
 

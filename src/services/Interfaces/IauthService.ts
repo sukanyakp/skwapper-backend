@@ -1,8 +1,9 @@
+import { UserDto } from "../../dto";
 import { Iuser } from "../../models/user/userModel";
 
 export interface IauthService {
   register (userData : Iuser) : Promise <string> // returns OTP
-  login(email:string,password:string) : Promise<{accessToken : string; refreshToken : string ; user : Iuser}> 
+  login(email:string,password:string) : Promise<{accessToken : string; refreshToken : string ;   user: UserDto | null;}> 
   verifyOtp(email:string,otp:string) : Promise <Iuser>
   resendOtp(email: string): Promise<void> 
   forgotPassword(email : string) : Promise <void>

@@ -10,6 +10,8 @@ export interface IScheduledSession extends Document {
   duration: number;          // in minutes
   status: "pending" | "confirmed" | "completed" | "cancelled";
   notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const scheduledSessionSchema = new Schema<IScheduledSession>(
