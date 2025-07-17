@@ -17,6 +17,10 @@ import session from 'express-session'
 import db from '../src/config/db'
 import cookieParser from "cookie-parser";
 
+import http from 'http';
+import { Server as SocketIOServer } from 'socket.io';
+import { setupSocket } from './utils/socket';
+
 db() 
 
 const app = express();
@@ -50,8 +54,25 @@ app.use('/courses',courseRoutes)
 app.use('/payments',paymentRoutes)
 app.use('/enroll',enrollmentRoutes)
 
+// Create HTTP server
+const server = http.createServer(app);
 
 
-app.listen(PORT, () => {
+// Attach Socket.IO
+const io = new SocketIOServer(server,{
+  cors : {
+    origin : process.env.FRONTEND_URL,
+    methods : ["GET","POST"],
+    credentials : true
+  }
+})
+
+// Socket.IO logic
+
+setupSocket(io)
+
+// Start both HTTP & Socket server
+
+server.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });

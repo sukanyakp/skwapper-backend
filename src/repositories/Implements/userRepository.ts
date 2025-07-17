@@ -35,9 +35,10 @@ export class UserRepository extends BaseRepository<Iuser> implements IuserReposi
     });
   }
 
-  async findApprovedTutors(): Promise<ITutorProfile[]> {
-    return await TutorProfile.find().sort({ createdAt: -1 });
-  }
+async findApprovedTutors(): Promise<ITutorProfile[]> {
+  const tutors = await TutorProfile.find().sort({ createdAt: -1 });
+  return tutors as unknown as ITutorProfile[];   // used unknown  -:   We use unknown to forcefully cast Mongoose results to match the expected TypeScript type.
+}
 
   public async findTutorById(tutorId: string): Promise<ITutorProfile | null> {
     return await TutorProfile.findById(tutorId);

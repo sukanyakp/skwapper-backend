@@ -18,7 +18,7 @@ export interface ITutorProfile extends Document {
 }
 
 const tutorProfileSchema = new mongoose.Schema({
-  
+  _id : mongoose.Schema.Types.ObjectId,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

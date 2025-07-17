@@ -1,5 +1,5 @@
 export interface UserDto {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: string;
@@ -10,7 +10,7 @@ export interface UserDto {
 import { Iuser } from "../models/user/userModel";
 
 export const mapUserToDto = (user: Iuser): UserDto => ({
-  id: user._id.toString(),
+  _id: user._id.toString(),
   name: user.name,
   email: user.email,
   role: user.role,

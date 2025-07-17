@@ -1,7 +1,7 @@
 import { ITutorProfile } from "../models/tutor/tutorProfile";
 
 export interface TutorProfileDto {
-  id: string;
+  _id: string;
   userId: string;
   name: string;
   bio?: string;
@@ -16,7 +16,7 @@ export interface TutorProfileDto {
 }
 
 export const mapTutorToDto = (profile: ITutorProfile): TutorProfileDto => ({
-  id: profile._id.toString(),
+  _id: profile._id.toString(),
   userId: profile.userId.toString(),
   name: profile.name,
   bio: profile.bio ?? "",

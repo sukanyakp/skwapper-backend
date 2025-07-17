@@ -34,8 +34,14 @@ public login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    
+
     // Auth service handles password verification & user fetching
     const { accessToken, refreshToken, user } = await this.service.login(email, password);
+  if (!user) {
+  res.status(401).json({ message: "Invalid credentials" });
+  return;
+}
     console.log(user.isBlocked);
 
     //  Check if the user is blocked

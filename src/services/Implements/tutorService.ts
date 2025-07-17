@@ -89,13 +89,13 @@ public async applyForTutor(
     { $set: { tutorProfileId: res._id } }
   );
 
-    return res ? mapTutorToDto(res) : null; 
+    return res ? mapTutorToDto(res as unknown as ITutorProfile) : null;
     
   }
 
   public async getTutorProfile(userId: string): Promise<TutorProfileDto | null> {
     const res = await TutorProfile.findOne({ userId });
-    return res ? mapTutorToDto(res) : null
+    return res ? mapTutorToDto(res as unknown as ITutorProfile) : null;
   }
 
   public async updateProfile(
